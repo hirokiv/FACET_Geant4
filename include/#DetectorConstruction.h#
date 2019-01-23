@@ -1,0 +1,30 @@
+#ifndef DETECTORCONSTRUCTION_H
+#define DETECTORCONSTRUCTION_H 1
+
+
+#include "globals.hh"
+#include "G4ThreeVector.hh"
+#include "G4MagneticField.hh"
+#include "G4VUserDetectorConstruction.hh"
+#include "G4LogicalVolumeStore.hh"
+
+class G4VPhysicalVolume;
+class DetectorMessenger;
+class G4LogicalVolume;
+class G4Material;
+class G4MagneticField;
+
+class DetectorConstruction
+{
+public:
+  DetectorConstruction();
+  virtual ~DetectorConstruction();
+
+  virtual G4VPhysicalVolume* Construvt();
+  virtual void ConstructSDandField();
+
+private:
+  void DefineMaterials();
+
+  G4bool fCheckOverlaps;
+}

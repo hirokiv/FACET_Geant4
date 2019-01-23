@@ -1,0 +1,124 @@
+#/run/numberOfThreads 4
+
+/control/verbose 0
+#/control/cout/useBuffer
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+#Detector
+#/ELI-ALPS/SYLOSeBeam/targetThickness 1 mm
+
+/run/initialize
+
+#Physics
+#/testem/phys/addPhysics emlivermore
+/testem/phys/addPhysics empenelope
+/process/eLoss/CSDARange true
+/run/setCut 100 nm
+#/testem/phys/setCuts 1 um
+/cuts/setLowEdge 50 keV
+
+/process/em/deexcitation Target true true true
+/process/em/fluo true
+/process/em/auger true
+/process/em/pixe true
+/process/em/deexcitationIgnoreCut true
+
+
+#/process/em/pixeXSmodel Empirical
+#/process/em/pixeXSmodel ECPSSR_FormFactor
+#/process/em/pixeXSmodel ECPSSR_Analytical
+/process/em/pixeElecXSmodel Penelope
+#/process/em/pixeElecXSmodel Livermore
+
+#Particle
+/gps/particle e-
+/gps/position 0 0 -1 cm
+/gps/direction 0 0 1
+/gps/ene/type Arb
+/gps/hist/type arb
+/gps/hist/point     0.00  980007
+/gps/hist/point     0.25  935932
+/gps/hist/point     0.50  927847
+/gps/hist/point     0.75  915932
+/gps/hist/point     1.00  900459
+/gps/hist/point     2.00  800549
+/gps/hist/point     3.00  680358
+#/gps/hist/point     4.00  562102
+#/gps/hist/point     5.50  458857
+#/gps/hist/point     6.50  374068
+#/gps/hist/point     7.50  306400
+#/gps/hist/point     9.00  252951
+#/gps/hist/point    10.00  210742
+#/gps/hist/point    11.00  177237
+#/gps/hist/point    12.00  150430
+#/gps/hist/point    13.00  128787
+#/gps/hist/point    14.00  111147
+#/gps/hist/point    15.00   96636
+#/gps/hist/point    16	   84390
+#/gps/hist/point    20	   55450
+#/gps/hist/point    25	   34771
+#/gps/hist/point    29	   22847
+#/gps/hist/point    34	   15010
+#/gps/hist/point    40	    9860
+#/gps/hist/point    46	    6786
+#/gps/hist/point    54	    4670
+#/gps/hist/point    64	    3212
+#/gps/hist/point    73	    2426
+#/gps/hist/point    83	    1832
+#/gps/hist/point    93	    1383
+#/gps/hist/point    103	    1094
+#/gps/hist/point    114	     866
+#/gps/hist/point    126	     685
+#/gps/hist/point    137	     568
+#/gps/hist/point    148	     450
+#/gps/hist/point    160	     372
+#/gps/hist/point    171	     323
+#/gps/hist/point    182	     268
+#/gps/hist/point    195	     244
+#/gps/hist/point    206	     211
+#/gps/hist/point    219	     184
+#/gps/hist/point    230	     160
+#/gps/hist/point    242	     145
+#/gps/hist/point    254	     132
+#/gps/hist/point    266	     120
+#/gps/hist/point    278	     109
+#/gps/hist/point    290       99
+#/gps/hist/point    301	      94
+#/gps/hist/point    314	      86
+#/gps/hist/point    327	      78
+#/gps/hist/point    338	      75
+#/gps/hist/point    350	      68
+#/gps/hist/point    363	      65
+#/gps/hist/point    374	      61
+#/gps/hist/point    387	      56
+/gps/hist/inter Lin
+
+#    /analysis/setFileName 0-3MeV
+#    /analysis/h1/set 1    1000  0.0   1  MeV #Edep in target [MeV]
+#    /analysis/h1/setXaxis 1 "Energy [MeV]"
+#    /analysis/h1/setYaxis 1 "Number of particles"
+#    
+#    /analysis/h1/set 2    1000  0.0   8.0  MeV #Gamma spectra at detector [MeV]
+#    /analysis/h1/setXaxis 2 "Energy [MeV]"
+#    /analysis/h1/setYaxis 2 "Number of particles"
+#    /analysis/h1/setAscii 2
+#    
+#    /analysis/h1/set 3    360  0.0  180.0  degree #Gamma distribution in YZ plane [degree]
+#    /analysis/h1/setXaxis 3 "Angle [degree]"
+#    /analysis/h1/setYaxis 3 "Number of particles"
+#    /analysis/h1/setAscii 3
+#    
+#    /analysis/h1/set 4    400000  0.0   400  MeV #Source spectra [MeV]
+#    /analysis/h1/setXaxis 4 "Energy [MeV]"
+#    /analysis/h1/setYaxis 4 "Number of particles"
+#    /analysis/h1/setAscii 4
+   
+
+/run/printProgress 10000000
+/run/beamOn 50000000
+
+
+
+
