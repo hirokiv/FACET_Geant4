@@ -16,9 +16,7 @@ class AnalysisManager
 public:
   AnalysisManager();
   virtual ~AnalysisManager();
-
   void Book();
-
   void PrintStatistic();
 
 private:

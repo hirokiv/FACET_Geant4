@@ -58,5 +58,15 @@
 /analysis/h1/setYaxis 4 "Number of particles"
 /analysis/h1/setAscii 4
 
+/analysis/h2/set 1    100  -.1   .1  cm  none  linear 100 -.1   .1  cm  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 1 "Position X [m]"
+/analysis/h2/setYaxis 1 "Position Y [m]"
+# /analysis/h2/setAscii 1 true
+
+/analysis/h2/set 2    100  -.1   .1  rad  none  linear 100 -.1   .1  rad  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 2 "Theta_X [deg]"
+/analysis/h2/setYaxis 2 "Theta_Y [deg]"
+#
+
 /run/printProgress 1000
 /run/beamOn 10000

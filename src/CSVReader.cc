@@ -11,20 +11,6 @@
  * A class to read data from a csv file.
  */
 
-//   class CSVReader
-//   {
-//   	std::string fileName;
-//   	std::string delimeter;
-//   
-//   public:
-//   	CSVReader(std::string filename, std::string delm = ",") :
-//   			fileName(filename), delimeter(delm)
-//   	{ }
-//   	// Function to fetch data from a CSV File
-//   	std::vector<std::vector<std::string> > getData();
-//    //       CSVReader :: getData();
-//   };
-//   
 /*
 * Parses through csv file line by line and returns the data
 * in vector of vector of strings.

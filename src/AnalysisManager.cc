@@ -20,19 +20,26 @@ AnalysisManager::~AnalysisManager()
 
 void AnalysisManager::Book()
 {
-  G4RootAnalysisManager* rootAnalysisManager = G4RootAnalysisManager::Instance();
+  G4RootAnalysisManager* rootAnalysisManager1 = G4RootAnalysisManager::Instance();
+//  G4RootAnalysisManager* rootAnalysisManager2 = G4RootAnalysisManager::Instance();
   //rootAnalysisManager->SetFileName(fFileName);
-  rootAnalysisManager->SetVerboseLevel(1);
-  rootAnalysisManager->SetActivation(true);
+  rootAnalysisManager1->SetVerboseLevel(1);
+  rootAnalysisManager1->SetActivation(true);
+
+//  rootAnalysisManager2->SetVerboseLevel(1);
+//  rootAnalysisManager2->SetActivation(true);
 
   const G4int kMaxHisto = 6;
-  const G4String id[] = {"dummy", "edep", "espec", "ang_yz", "sspec", "dummy"};
+  const G4String id[] = {"dummy", "edep", "espec", "ang_yz", "sspec",
+			"dummy", "space2d", "angle2d"};
   const G4String title[] = {"dummy",
                             "Edep in target [MeV]",        //1
                             "Energy spectrum at detector", //2
                             "YZ direction",                //3
                             "Source spectra",              //4
-                            "dummy"};
+			    "dummy",                       //
+                            "Spatial 2D dist",             //1 2D
+                            "Angular 2D dist"};            //2 2D
   // Default values (to be reset via /analysis/h1/set command)
   G4int nbins = 100;
   G4double vmin = 0.;
@@ -40,10 +47,20 @@ void AnalysisManager::Book()
 
   // Create all histograms as inactivated
   // as we have not yet set nbins, vmin, vmax
-  for (G4int k=0; k<kMaxHisto; k++) {
-    G4int ih = rootAnalysisManager->CreateH1(id[k], title[k], nbins, vmin, vmax);
-    rootAnalysisManager->SetH1Activation(ih, true);
+  G4int ih;
+//  for (G4int k=0; k<kMaxHisto; k++) {
+  for (G4int k=0; k<5; k++) {
+    ih = rootAnalysisManager1->CreateH1(id[k], title[k], nbins, vmin, vmax);
+    rootAnalysisManager1->SetH1Activation(ih, true);
   }
+
+  for (G4int k=5; k<8; k++) {
+    ih = rootAnalysisManager1->CreateH2(id[k], title[k], 
+				nbins, -vmax, vmax,   // bins'number, xmin, xmax
+				nbins, -vmax, vmax);  // bins'number, xmin, xmax
+    rootAnalysisManager1->SetH2Activation(ih, true);
+  }
+//  rootAnalysisManager2->SetH2Activation(ih, true);
 
   G4CsvAnalysisManager* csvAnalysisManager = G4CsvAnalysisManager::Instance();
   csvAnalysisManager->SetFileName("ntuple");
@@ -72,6 +89,24 @@ void AnalysisManager::Book()
   csvAnalysisManager->CreateNtupleDColumn("MomentumDirection_Y");
   csvAnalysisManager->CreateNtupleDColumn("MomentumDirection_Z");
   csvAnalysisManager->CreateNtupleSColumn("Creator process name");
+  csvAnalysisManager->FinishNtuple();
+
+  csvAnalysisManager->CreateNtuple("02", "Electrons Output for QuickPIC");
+  csvAnalysisManager->CreateNtupleDColumn("X [m]");
+  csvAnalysisManager->CreateNtupleDColumn("Y [m]");
+  csvAnalysisManager->CreateNtupleDColumn("px/pz");
+  csvAnalysisManager->CreateNtupleDColumn("py/pz");
+  csvAnalysisManager->CreateNtupleDColumn("CT-Z[m]");
+  csvAnalysisManager->CreateNtupleDColumn("Gamma (Energy)");
+  csvAnalysisManager->FinishNtuple();
+
+  csvAnalysisManager->CreateNtuple("03", "Positrons Output for QuickPIC");
+  csvAnalysisManager->CreateNtupleDColumn("X [m]");
+  csvAnalysisManager->CreateNtupleDColumn("Y [m]");
+  csvAnalysisManager->CreateNtupleDColumn("px/pz");
+  csvAnalysisManager->CreateNtupleDColumn("py/pz");
+  csvAnalysisManager->CreateNtupleDColumn("CT-Z[m]");
+  csvAnalysisManager->CreateNtupleDColumn("Gamma (Energy)");
   csvAnalysisManager->FinishNtuple();
 }
 

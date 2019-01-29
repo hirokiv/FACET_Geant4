@@ -24,8 +24,10 @@ public:
 private:
   G4int fHCID1;
   G4int fHCID2;
+  G4int fHCID3;
   G4int                 fNumberOfEvents;
-  G4RootAnalysisManager* rootAnalysisManager;
+  G4RootAnalysisManager* rootAnalysisManager1;
+  G4RootAnalysisManager* rootAnalysisManager2;
   G4CsvAnalysisManager*  csvAnalysisManager;
 };
 

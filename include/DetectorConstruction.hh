@@ -25,6 +25,7 @@ public:
 
   void SetWorldMaterial(G4String);
   void SetTargetMaterial(G4String);
+  void SetVirtualMaterial(G4String);
   void SetDetectorMaterial(G4String);
   void SetTargetXYSize(G4double size) {fTargetXYSize = size; ComputeParameters();}
   void SetTargetThickness(G4double val) {fTargetThickness = val;}
@@ -39,9 +40,11 @@ private:
   G4VPhysicalVolume* fWorldVolume;
   G4LogicalVolume* fTargetLogicalVolume;
   G4LogicalVolume* fDetectorLogicalVolume;
+  G4LogicalVolume* fVirtualLogicalVolume;
 
   G4Material* fWorldMaterial;
   G4Material* fTargetMaterial;
+  G4Material* fVirtualMaterial;
   G4Material* fDetectorMaterial;
 
   G4double fTargetXYSize;

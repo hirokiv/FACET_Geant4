@@ -61,8 +61,6 @@ G4int SensitiveDetector::WriteBeamFile(G4String filename, G4ThreeVector position
 }
 
 
-
-
 G4bool SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
   DetectorHit* newHit = new DetectorHit();
@@ -93,13 +91,13 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   G4String particleName = aStep->GetTrack()->GetParticleDefinition()->GetParticleName(); 
   G4ThreeVector position_World = aStep->GetPostStepPoint()->GetPosition();
   G4ThreeVector momentum_dir = aStep->GetPreStepPoint()->GetMomentumDirection();
-  G4double kin_energy = aStep->GetTrack()->GetKineticEnergy();
-  G4double time = aStep->GetPreStepPoint()->GetGlobalTime();
+//  G4double kin_energy = aStep->GetTrack()->GetKineticEnergy();
+ // G4double time = aStep->GetPreStepPoint()->GetGlobalTime();
   // Write the position and time into the file for the QuickPIC input
-  if (particleName=="e-") WriteBeamFile("beam_electron.txt", position_World, momentum_dir, kin_energy, time);
-  if (particleName=="e+") WriteBeamFile("beam_positron.txt", position_World, momentum_dir, kin_energy, time);
-  if (particleName=="gamma") WriteBeamFile("beam_gamma___.txt", position_World, momentum_dir, kin_energy, time);
-  if (particleName=="opticalphoton") WriteBeamFile("beam_ophoton_.txt", position_World, momentum_dir, kin_energy, time);
+//  if (particleName=="e-") WriteBeamFile("beam_electron.txt", position_World, momentum_dir, kin_energy, time);
+//  if (particleName=="e+") WriteBeamFile("beam_positron.txt", position_World, momentum_dir, kin_energy, time);
+//  if (particleName=="gamma") WriteBeamFile("beam_gamma___.txt", position_World, momentum_dir, kin_energy, time);
+//  if (particleName=="opticalphoton") WriteBeamFile("beam_ophoton_.txt", position_World, momentum_dir, kin_energy, time);
   ///////////////////////////////////////////////////////
 
   return true;

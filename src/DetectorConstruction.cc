@@ -2,6 +2,7 @@
 #include "DetectorMessenger.hh"
 #include "SensitiveTarget.hh"
 #include "SensitiveDetector.hh"
+#include "SensitiveVirtual.hh"
 #include "G4Box.hh"
 #include "G4Orb.hh"
 #include "G4Sphere.hh"
@@ -27,6 +28,8 @@ DetectorConstruction::DetectorConstruction()
   SetWorldMaterial("G4_Galactic");
   SetTargetMaterial("G4_W");
   SetDetectorMaterial("G4_Galactic");
+  SetVirtualMaterial("G4_Galactic");
+//  SetPlateMaterial("G4_P");
   fDetectorMessenger = new DetectorMessenger(this);
 }
 
@@ -35,7 +38,9 @@ DetectorConstruction::~DetectorConstruction() {
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
+  // ==========================================================================
   //The world
+  // ==========================================================================
   G4Orb* solidWorld = new G4Orb("World", fWorldRadius);
   G4LogicalVolume* lWorld = new G4LogicalVolume(solidWorld, fWorldMaterial, "World");
   fWorldVolume = new G4PVPlacement(0,
@@ -48,7 +53,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
                                    fCheckOverlaps);
   lWorld->SetVisAttributes(G4VisAttributes::Invisible);
 
+  // ==========================================================================
   //The target
+  // ==========================================================================
   G4Box* solidTarget = new G4Box("Target", fTargetXYSize/2, fTargetXYSize/2, fTargetThickness/2);
   fTargetLogicalVolume = new G4LogicalVolume(solidTarget, fTargetMaterial, "Target");
   new G4PVPlacement(0,
@@ -60,7 +67,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
                     0,
                     fCheckOverlaps);
 
+  // ==========================================================================
   //The detector
+  // ==========================================================================
   G4Sphere* solidDetector = new G4Sphere("Detector",
                                          fDetectorRadius,
                                          fDetectorRadius + 1*mm,
@@ -69,7 +78,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
                                          0*degree,
                                          180*degree);
 //  G4Box* solidDetector = new G4Box("Target", fTargetXYSize/2, fTargetXYSize/2, fTargetThickness/2);
-
   fDetectorLogicalVolume = new G4LogicalVolume(solidDetector, fDetectorMaterial, "Detector");
   new G4PVPlacement(0,
                     G4ThreeVector(0, 0, 0),
@@ -80,6 +88,21 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
                     0,
                     fCheckOverlaps);
   // fDetectorLogicalVolume->SetVisAttributes(G4VisAttributes::Invisible);
+  
+  // ==========================================================================
+  // Virtual detector
+  // ==========================================================================
+  G4Box* solidVirtual = new G4Box("Virtual", fTargetXYSize/2, fTargetXYSize/2, fTargetThickness/2);
+  fVirtualLogicalVolume = new G4LogicalVolume(solidVirtual, fVirtualMaterial, "Virtual");
+  new G4PVPlacement(0,
+                    G4ThreeVector(0, 0, fTargetThickness/2 + fTargetThickness + 1.*m),
+                    fVirtualLogicalVolume,
+                    "Virtual",
+                    lWorld,
+                    false,
+                    0,
+                    fCheckOverlaps);
+
 
   return fWorldVolume;
 }
@@ -93,6 +116,13 @@ void DetectorConstruction::ConstructSDandField() {
   SensitiveDetector* sDetector = new SensitiveDetector("Detector", "DetectorHitsCollection");
   SetSensitiveDetector(fDetectorLogicalVolume, sDetector);
   G4SDManager::GetSDMpointer()->AddNewDetector(sDetector);
+
+  SensitiveVirtual* sVirtual = new SensitiveVirtual("Virtual", "VirtualHitsCollection");
+  SetSensitiveDetector(fVirtualLogicalVolume, sVirtual);
+  G4SDManager::GetSDMpointer()->AddNewDetector(sVirtual);
+
+
+
 }
 
 void DetectorConstruction::DefineMaterials() {
@@ -101,7 +131,7 @@ void DetectorConstruction::DefineMaterials() {
 
 void DetectorConstruction::ComputeParameters(){
   fDetectorRadius = fTargetXYSize*1.5;
-  fWorldRadius = fDetectorRadius*1.5;
+  fWorldRadius = fDetectorRadius*15.;
 }
 
 G4Material* DetectorConstruction::SetMaterial(G4String mat){
@@ -140,6 +170,14 @@ void DetectorConstruction::SetDetectorMaterial(G4String mat){
   G4Material* newMat = SetMaterial(mat);
   if (newMat) {
     fDetectorMaterial = newMat;
+  }
+  G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}
+
+void DetectorConstruction::SetVirtualMaterial(G4String mat){
+  G4Material* newMat = SetMaterial(mat);
+  if (newMat) {
+    fVirtualMaterial = newMat;
   }
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }

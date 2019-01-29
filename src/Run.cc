@@ -6,6 +6,7 @@
 #include "G4SDManager.hh"
 #include "DetectorHit.hh"
 #include "TargetHit.hh"
+#include "VirtualHit.hh"
 #include "DetectorConstruction.hh"
 //#include "AnalysisManager.hh"
 #include "G4UnitsTable.hh"
@@ -14,11 +15,12 @@
 #include "G4ThreeVector.hh"
 #include "Randomize.hh"
 #include <cmath>
+#include <boost/format.hpp>
 
 Run::Run()
-  : G4Run(), fHCID1(-1), fHCID2(-1), fNumberOfEvents(0)
+  : G4Run(), fHCID1(-1), fHCID2(-1), fHCID3(-1), fNumberOfEvents(0)
 {
-  rootAnalysisManager = G4RootAnalysisManager::Instance();
+  rootAnalysisManager1 = G4RootAnalysisManager::Instance();
   csvAnalysisManager = G4CsvAnalysisManager::Instance();
 }
 
@@ -35,28 +37,36 @@ void Run::Merge(const G4Run* aRun)
 
 void Run::RecordEvent(const G4Event* event)
 {
-  rootAnalysisManager->FillH1(4, event->GetPrimaryVertex()->GetPrimary()->GetKineticEnergy());
+  //  Fill fourth H1
+  rootAnalysisManager1->FillH1(4, event->GetPrimaryVertex()->GetPrimary()->GetKineticEnergy());
   //G4cout << "Check!" << G4endl;
   fNumberOfEvents++;
   G4SDManager* sdm = G4SDManager::GetSDMpointer();
-  //Sensitive detector
+
+
+  // ===============================================================================
+  //Sensitive detector fHCID1
+  // ===============================================================================
   if (fHCID1<0) {
     fHCID1 = sdm->GetCollectionID("Target/TargetHitsCollection");
   }
-  G4HCofThisEvent* mHCE = event->GetHCofThisEvent();
+
+  G4HCofThisEvent* mHCE1 = event->GetHCofThisEvent();
   TargetHitsCollection* target = NULL;
-    if (mHCE) {
-    target = (TargetHitsCollection*)(mHCE->GetHC(fHCID1));
+  if (mHCE1) {
+    target = (TargetHitsCollection*)(mHCE1->GetHC(fHCID1));
     //G4cout << detectorHC2 << G4endl;
   }
   if (target) {
     G4int n_hit = target->entries();
-    //G4cout << n_hit << G4endl;
+//    G4cout << n_hit << G4endl;
     for (G4int i = 0; i < n_hit; i++) {
       TargetHit* aHit = (*target)[i];
-      //G4cout << G4BestUnit(edep, "Energy") << G4endl;
-      rootAnalysisManager->FillH1(1, aHit->GetEdep());
+//      G4cout << G4BestUnit(aHit->GetEdep(), "Energy") << G4endl;
+   //  Fill first H1
+      rootAnalysisManager1->FillH1(1, aHit->GetEdep());
       //Is Photon?
+//      G4cout << aHit->GetParticleName() << G4endl;
       if (aHit->GetParticleName() == "gamma") {
         if (aHit->GetCurrentStepNumber() == 1) {
           //Has kinetic energy?
@@ -80,11 +90,12 @@ void Run::RecordEvent(const G4Event* event)
         }
         }
       }
-
     }
   }//End fHCID1
 
+  // ===============================================================================
   //fHCID2
+  // ===============================================================================
   if (fHCID2<0) {
     fHCID2 = sdm->GetCollectionID("Detector/DetectorHitsCollection");
   }
@@ -111,7 +122,8 @@ void Run::RecordEvent(const G4Event* event)
         csvAnalysisManager->FillNtupleDColumn(1, 5, direction.x());
         csvAnalysisManager->FillNtupleDColumn(1, 6, direction.y());
         csvAnalysisManager->FillNtupleDColumn(1, 7, direction.z());
-        rootAnalysisManager->FillH1(3,
+   //  Fill third H1
+        rootAnalysisManager1->FillH1(3,
                                     std::acos(direction.z()/std::sqrt(direction.x()*direction.x() +
                                                                       direction.y()*direction.y() +
                                                                       direction.z()*direction.z())));
@@ -119,10 +131,78 @@ void Run::RecordEvent(const G4Event* event)
           csvAnalysisManager->FillNtupleSColumn(1, 8, aHit->GetCreatorProcessName());
         }
         csvAnalysisManager->AddNtupleRow(1);
-        rootAnalysisManager->FillH1(2, aHit->GetKineticEnergy());
+   //  Fill second H1
+        rootAnalysisManager1->FillH1(2, aHit->GetKineticEnergy());
       }
     }
   }//End fHCID2
+
+  // ===============================================================================
+  // fHCID3
+  // ===============================================================================
+  if (fHCID3<0) {
+    fHCID3 = sdm->GetCollectionID("Virtual/VirtualHitsCollection");
+  }
+
+  G4HCofThisEvent* mHCE3 = event->GetHCofThisEvent();
+  VirtualHitsCollection* Virtual = NULL;
+  if (mHCE3) {
+    Virtual = (VirtualHitsCollection*)(mHCE3->GetHC(fHCID3));
+  }
+
+  if (Virtual) { 
+    G4int n_hit = Virtual->entries();
+// Only the first entry is taken
+    if (n_hit>0) {
+      VirtualHit* aHit = (*Virtual)[0];
+      // Is electron? for the QuickPIC output
+      if (aHit->GetParticleName() == "e-") {
+        G4ThreeVector prePos = aHit->GetPrePos();
+        G4ThreeVector mom_dir = aHit->GetMomentumDirection();
+        G4double time = aHit->GetParticleTime();
+        G4double c_light = 3e-1;   // speed of light in [m/ns]
+        G4double z_init = - 50e-6; // Always start simulation at z=-50 um
+        G4double gamma = aHit->GetKineticEnergy()/0.511;
+        G4double l = std::sqrt(mom_dir.x()*mom_dir.x() + mom_dir.y()*mom_dir.y() + mom_dir.z()*mom_dir.z());
+        csvAnalysisManager->FillNtupleDColumn(2, 0, (prePos.x()/m)                        );
+        csvAnalysisManager->FillNtupleDColumn(2, 1, (prePos.y()/m)                        );
+        csvAnalysisManager->FillNtupleDColumn(2, 2, (mom_dir.x()/l)                       );
+        csvAnalysisManager->FillNtupleDColumn(2, 3, (mom_dir.y()/l)                       );
+        csvAnalysisManager->FillNtupleDColumn(2, 4, (c_light*time - prePos.z()/m + z_init));
+        csvAnalysisManager->FillNtupleDColumn(2, 5, (gamma)                               );
+        csvAnalysisManager->AddNtupleRow(2);
+      }
+      
+
+      // Is positron? for the QuickPIC output
+      if (aHit->GetParticleName() == "e+") {
+        G4ThreeVector prePos = aHit->GetPrePos();
+        G4ThreeVector mom_dir = aHit->GetMomentumDirection();
+        G4double time = aHit->GetParticleTime();
+        G4double c_light = 3e-1;   // speed of light in [m/ns]
+        G4double z_init = - 50e-6; // Always start simulation at z=-50 um
+        G4double gamma = aHit->GetKineticEnergy()/0.511;
+        G4double l = std::sqrt(mom_dir.x()*mom_dir.x() + mom_dir.y()*mom_dir.y() + mom_dir.z()*mom_dir.z());
+        csvAnalysisManager->FillNtupleDColumn(3, 0, prePos.x()/m);
+        csvAnalysisManager->FillNtupleDColumn(3, 1, prePos.y()/m);
+        csvAnalysisManager->FillNtupleDColumn(3, 2, mom_dir.x()/l);
+        csvAnalysisManager->FillNtupleDColumn(3, 3, mom_dir.y()/l);
+        csvAnalysisManager->FillNtupleDColumn(3, 4, c_light*time - prePos.z()/m + z_init);
+        csvAnalysisManager->FillNtupleDColumn(3, 5, gamma);
+
+        csvAnalysisManager->AddNtupleRow(3);
+      }
+
+      // Is gamma? Generate 2D histogram
+      if (aHit->GetParticleName() == "gamma") {
+        G4ThreeVector prePos = aHit->GetPrePos();
+        G4ThreeVector mom_dir = aHit->GetMomentumDirection();
+        rootAnalysisManager1->FillH2(1, prePos.x()/m, prePos.y()/m);
+        rootAnalysisManager1->FillH2(2, std::asin(mom_dir.x()), std::asin(mom_dir.y()));
+// *180./std::acos(-1)
+      }
+    }
+  }
 
   G4Run::RecordEvent(event);
 }
