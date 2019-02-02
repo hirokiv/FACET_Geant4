@@ -126,9 +126,7 @@ void PhysListEmStandard::ConstructProcess()
       G4eIonisation* eIoni = new G4eIonisation();
       eIoni->SetStepFunction(0.1, 100*um);      
       ph->RegisterProcess(eIoni, particle);
-      //
       ph->RegisterProcess(new G4eBremsstrahlung(), particle);
-      //
       ph->RegisterProcess(new G4eplusAnnihilation(), particle);    
                   
     } else if (particleName == "mu+" || 

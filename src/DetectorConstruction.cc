@@ -26,10 +26,10 @@ DetectorConstruction::DetectorConstruction()
   G4cout << "ComputeParameters" << G4endl;
   ComputeParameters();
   SetWorldMaterial("G4_Galactic");
-  SetTargetMaterial("G4_W");
+  SetTargetMaterial("G4_Ta");
   SetDetectorMaterial("G4_Galactic");
   SetVirtualMaterial("G4_Galactic");
-//  SetPlateMaterial("G4_P");
+
   fDetectorMessenger = new DetectorMessenger(this);
 }
 
@@ -70,17 +70,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   // ==========================================================================
   //The detector
   // ==========================================================================
-  G4Sphere* solidDetector = new G4Sphere("Detector",
-                                         fDetectorRadius,
-                                         fDetectorRadius + 1*mm,
-                                         0*degree,
-                                         360*degree,
-                                         0*degree,
-                                         180*degree);
-//  G4Box* solidDetector = new G4Box("Target", fTargetXYSize/2, fTargetXYSize/2, fTargetThickness/2);
+//   G4Sphere* solidDetector = new G4Sphere("Detector",
+//                                          fDetectorRadius,
+//                                          fDetectorRadius + 1*mm,
+//                                          0*degree,
+//                                          360*degree,
+//                                          0*degree,
+//                                          180*degree);
+
+  G4Box* solidDetector = new G4Box("Detector", fTargetXYSize/2, fTargetXYSize/2, fTargetThickness/2);
   fDetectorLogicalVolume = new G4LogicalVolume(solidDetector, fDetectorMaterial, "Detector");
   new G4PVPlacement(0,
-                    G4ThreeVector(0, 0, 0),
+                    G4ThreeVector(0, 0, fTargetThickness/2 + fTargetThickness),
                     fDetectorLogicalVolume,
                     "Detector",
                     lWorld,
@@ -103,6 +104,20 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
                     0,
                     fCheckOverlaps);
 
+//  // ==========================================================================
+//  // Virtual detector2 for QuickPIC input
+//  // ==========================================================================
+//  G4Box* solidQPIC = new G4Box("QPIC", fTargetXYSize/2, fTargetXYSize/2, fTargetThickness/2);
+//  fQPICLogicalVolume = new G4LogicalVolume(solidQPIC, fVirtualMaterial, "QPIC");
+//  new G4PVPlacement(0,
+//                    G4ThreeVector(0, 0, fTargetThickness/2 + fTargetThickness),
+//                    fQPICLogicalVolume,
+//                    "QPIC",
+//                    lWorld,
+//                    false,
+//                    0,
+//                    fCheckOverlaps);
+
 
   return fWorldVolume;
 }
@@ -121,8 +136,9 @@ void DetectorConstruction::ConstructSDandField() {
   SetSensitiveDetector(fVirtualLogicalVolume, sVirtual);
   G4SDManager::GetSDMpointer()->AddNewDetector(sVirtual);
 
-
-
+//  SensitiveVirtual* sQPIC = new SensitiveVirtual("QPIC", "VirtualHitsCollection");
+//  SetSensitiveDetector(fQPICLogicalVolume, sQPIC);
+//  G4SDManager::GetSDMpointer()->AddNewDetector(sQPIC);
 }
 
 void DetectorConstruction::DefineMaterials() {
@@ -134,8 +150,7 @@ void DetectorConstruction::ComputeParameters(){
   fWorldRadius = fDetectorRadius*15.;
 }
 
-G4Material* DetectorConstruction::SetMaterial(G4String mat){
-  G4cout << "Set material" << G4endl;
+G4Material* DetectorConstruction::SetMaterial(G4String mat){ G4cout << "Set material" << G4endl;
   G4NistManager* man = G4NistManager::Instance();
   G4cout << "instance of NIST manager found" << G4endl;
   man->SetVerbose(1);
@@ -159,6 +174,7 @@ void DetectorConstruction::SetWorldMaterial(G4String mat){
 }
 
 void DetectorConstruction::SetTargetMaterial(G4String mat){
+  G4cout << "Set Target Material" << G4endl;
   G4Material* newMat = SetMaterial(mat);
   if (newMat) {
     fTargetMaterial = newMat;
@@ -167,6 +183,7 @@ void DetectorConstruction::SetTargetMaterial(G4String mat){
 }
 
 void DetectorConstruction::SetDetectorMaterial(G4String mat){
+  G4cout << "Set Detector Material" << G4endl;
   G4Material* newMat = SetMaterial(mat);
   if (newMat) {
     fDetectorMaterial = newMat;

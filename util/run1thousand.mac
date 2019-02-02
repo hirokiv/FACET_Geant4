@@ -1,4 +1,4 @@
-#/run/numberOfThreads 14
+/run/numberOfThreads 8
 
 /control/verbose 0
 #/control/cout/useBuffer
@@ -9,10 +9,10 @@
 #Detector
 
 #Physics
-#/testem/phys/addPhysics emlivermore
-/testem/phys/addPhysics empenelope
-/process/eLoss/CSDARange true
-/run/setCut 100 nm
+/testem/phys/addPhysics emlivermore
+#/testem/phys/addPhysics empenelope
+#/process/eLoss/CSDARange true
+#/run/setCut 100 nm
 #/testem/phys/setCuts 1 um
 /cuts/setLowEdge 30 keV
 
@@ -27,8 +27,8 @@
 #/process/em/pixeXSmodel Empirical
 #/process/em/pixeXSmodel ECPSSR_FormFactor
 #/process/em/pixeXSmodel ECPSSR_Analytical
-/process/em/pixeElecXSmodel Penelope
-#/process/em/pixeElecXSmodel Livermore
+#/process/em/pixeElecXSmodel Penelope
+/process/em/pixeElecXSmodel Livermore
 
 # Set guns
 #//  /gun/particle e-
@@ -58,15 +58,32 @@
 /analysis/h1/setYaxis 4 "Number of particles"
 /analysis/h1/setAscii 4
 
-/analysis/h2/set 1    100  -.1   .1  cm  none  linear 100 -.1   .1  cm  none linear #Source spectra [MeV]
+/analysis/h2/set 1    100  -.01   .01    m  none  linear 100 -.01   .01   m  none linear #Source spectra [MeV]
 /analysis/h2/setXaxis 1 "Position X [m]"
 /analysis/h2/setYaxis 1 "Position Y [m]"
 # /analysis/h2/setAscii 1 true
 
-/analysis/h2/set 2    100  -.1   .1  rad  none  linear 100 -.1   .1  rad  none linear #Source spectra [MeV]
-/analysis/h2/setXaxis 2 "Theta_X [deg]"
-/analysis/h2/setYaxis 2 "Theta_Y [deg]"
-#
+/analysis/h2/set 2    100  -.01   .01  rad  none  linear 100 -.01   .01  rad  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 2 "Theta_X [rad]"
+/analysis/h2/setYaxis 2 "Theta_Y [rad]"
 
-/run/printProgress 1000
-/run/beamOn 10000
+/analysis/h2/set 3    100  -.01   .01    m  none  linear 100 -.01   .01   m  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 3 "Position X [m]"
+/analysis/h2/setYaxis 3 "Position Y [m]"
+# /analysis/h2/setAscii 1 true
+
+/analysis/h2/set 4    100  -.01   .01  rad  none  linear 100 -.01   .01  rad  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 4 "Theta_X [rad]"
+/analysis/h2/setYaxis 4 "Theta_Y [rad]"
+/analysis/h2/set 5    100  -.01   .01    m  none  linear 100  -.01   .01   m  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 5 "Position X [m]"
+/analysis/h2/setYaxis 5 "Position Y [m]"
+# /analysis/h2/setAscii 1 true
+
+/analysis/h2/set 6    100  -.01   .01  rad  none  linear 100 -.01   .01  rad  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 6 "Theta_X [rad]"
+/analysis/h2/setYaxis 6 "Theta_Y [rad]"
+
+
+/run/printProgress 50000
+/run/beamOn 100000

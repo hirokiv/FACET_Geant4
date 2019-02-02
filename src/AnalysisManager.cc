@@ -26,20 +26,26 @@ void AnalysisManager::Book()
   rootAnalysisManager1->SetVerboseLevel(1);
   rootAnalysisManager1->SetActivation(true);
 
-//  rootAnalysisManager2->SetVerboseLevel(1);
-//  rootAnalysisManager2->SetActivation(true);
 
   const G4int kMaxHisto = 6;
   const G4String id[] = {"dummy", "edep", "espec", "ang_yz", "sspec",
-			"dummy", "space2d", "angle2d"};
+			"dummy", "space_gamma", "angle_gamma",
+			"space_electron", "angle_electron",
+			"space_positron", "angle_positron" 
+			};
   const G4String title[] = {"dummy",
                             "Edep in target [MeV]",        //1
                             "Energy spectrum at detector", //2
                             "YZ direction",                //3
                             "Source spectra",              //4
 			    "dummy",                       //
-                            "Spatial 2D dist",             //1 2D
-                            "Angular 2D dist"};            //2 2D
+                            "Spatial 2D dist of Gamma-rays", //1 2D
+                            "Angular 2D dist of Gamma-rays", //2 2D
+                            "Spatial 2D dist of electrons",  //3 2D
+                            "Angular 2D dist of electrons",  //4 2D
+                            "Spatial 2D dist of positrons",  //5 2D
+                            "Angular 2D dist of positrons",  //6 2D
+			};            
   // Default values (to be reset via /analysis/h1/set command)
   G4int nbins = 100;
   G4double vmin = 0.;
@@ -54,7 +60,7 @@ void AnalysisManager::Book()
     rootAnalysisManager1->SetH1Activation(ih, true);
   }
 
-  for (G4int k=5; k<8; k++) {
+  for (G4int k=5; k<12; k++) {
     ih = rootAnalysisManager1->CreateH2(id[k], title[k], 
 				nbins, -vmax, vmax,   // bins'number, xmin, xmax
 				nbins, -vmax, vmax);  // bins'number, xmin, xmax

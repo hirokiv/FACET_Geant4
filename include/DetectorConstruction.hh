@@ -41,6 +41,7 @@ private:
   G4LogicalVolume* fTargetLogicalVolume;
   G4LogicalVolume* fDetectorLogicalVolume;
   G4LogicalVolume* fVirtualLogicalVolume;
+  G4LogicalVolume* fQPICLogicalVolume;
 
   G4Material* fWorldMaterial;
   G4Material* fTargetMaterial;

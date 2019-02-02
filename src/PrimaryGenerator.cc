@@ -62,16 +62,13 @@ void boxmuller (G4double& z1, G4double& z2, G4double mu,G4double sigma) {
     // linear transform
     z1  = mu + sigma*x1;
     z2  = mu + sigma*x2; 
-  //  cout << z1 << "," << z2 << endl; 
+    //  cout << z1 << "," << z2 << endl; 
 }
 
 G4double PrimaryGenerator::EnergyDist()
 {
 //  G4cout << "================EnergyDist==========" << G4endl;
   G4double rnd = (G4double)rand()/(G4double)RAND_MAX;
-//  G4cout << "=================1==================" << G4endl;
-//  G4cout << rnd << G4endl;
-//  G4cout << "====================================" << G4endl;
   while (rnd < CDF[0]) rnd = (G4double)rand()/(G4double)RAND_MAX;
   G4int n = 0;
   while ( rnd > CDF[n] ) n = n + 1;
@@ -88,9 +85,8 @@ G4double PrimaryGenerator::EnergyDist()
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   // Setup for primary particle
   G4String particleName = "e-";
-  G4double momentum = PrimaryGenerator::EnergyDist()*GeV;
-//  G4cout << momentum << G4endl;
-//  G4double momentum = 10.0*GeV;
+//  G4double momentum = PrimaryGenerator::EnergyDist()*GeV;
+  G4double momentum = 10.0*GeV;
 
   // Setup beam parameters
 //  G4double emitt_n = 20; // Normalized emittance mm-mrad
@@ -105,19 +101,21 @@ G4double PrimaryGenerator::EnergyDist()
 
   G4double r1, r2;
 
-  boxmuller (r1, r2, 0, 1);
+//  boxmuller (r1, r2, 0, 1);
+  r1 = 0;
+  r2 = 0;
   G4double pos_X = sigma_r*r1;
   G4double mom_X = sin(sigma_rv*r2); 
-  boxmuller (r1, r2, 0, 1);
+
+//  boxmuller (r1, r2, 0, 1);
   G4double pos_Y = sigma_r*r1;
   G4double mom_Y = sin(sigma_rv*r2); 
-  boxmuller (r1, r2, 0, 1);
+
+//  boxmuller (r1, r2, 0, 1);
+
   G4double pos_Z_center = -50*um;
   G4double pos_Z = sigma_z*r1 + pos_Z_center;
   G4double mom_Z = sqrt(1-mom_X*mom_X-mom_Y*mom_Y); 
-
-//  G4cout << "pos_X  " << pos_X << "pos_Y  " << pos_Y << "m  " << m <<  G4endl; 
-//  G4cout << "mom_X  " << mom_X << "mom_Y  " << mom_Y << "mom_Z  " << mom_Z <<  G4endl; 
 
   G4ThreeVector momentumVector = G4ThreeVector(mom_X, mom_Y, mom_Z)*momentum;
 //  G4cout << "===============Vector================" << G4endl;
@@ -129,7 +127,6 @@ G4double PrimaryGenerator::EnergyDist()
   // Gun Position - randomization
   G4ThreeVector vertex = G4ThreeVector(pos_X, pos_Y, pos_Z);
   G4PrimaryVertex* primaryVertex = new G4PrimaryVertex(vertex, 0.0*second);
-
 
 //  fpParticleGPS->setParticlePosition(position);
 //  fpParticleGun->GeneratePrimaryVertex(anEvent);
