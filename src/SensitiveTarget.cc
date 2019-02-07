@@ -7,6 +7,7 @@
 #include "Randomize.hh"
 #include "G4VProcess.hh"
 #include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
 #include "G4TouchableHandle.hh"
 
 SensitiveTarget::SensitiveTarget(const G4String& name, const G4String& hitsCollectionName)

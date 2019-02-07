@@ -27,24 +27,30 @@ void AnalysisManager::Book()
   rootAnalysisManager1->SetActivation(true);
 
 
-  const G4int kMaxHisto = 6;
-  const G4String id[] = {"dummy", "edep", "espec", "ang_yz", "sspec",
-			"dummy", "space_gamma", "angle_gamma",
+  const G4int kMaxH1 = 6;
+  const G4int kMaxH2 = 7;
+  const G4String id1[] = {"dummy", "edep", "espec", "ang_yz", "elec_spec", "posi_spec",
+			"dummy"};
+  const G4String id2[] = { "dummy", "space_gamma", "angle_gamma",
 			"space_electron", "angle_electron",
-			"space_positron", "angle_positron" 
+			"space_positron", "angle_positron", "dummy" 
 			};
-  const G4String title[] = {"dummy",
+  const G4String title1[] = {"dummy",
                             "Edep in target [MeV]",        //1
                             "Energy spectrum at detector", //2
                             "YZ direction",                //3
-                            "Source spectra",              //4
-			    "dummy",                       //
+                            "Electron spectra",              //4
+                            "Positron spectra",              //5 
+                            "dummy"};                       //
+  const G4String title2[] = {
+                            "dummy", 
                             "Spatial 2D dist of Gamma-rays", //1 2D
                             "Angular 2D dist of Gamma-rays", //2 2D
                             "Spatial 2D dist of electrons",  //3 2D
                             "Angular 2D dist of electrons",  //4 2D
                             "Spatial 2D dist of positrons",  //5 2D
                             "Angular 2D dist of positrons",  //6 2D
+                            "dummy" 
 			};            
   // Default values (to be reset via /analysis/h1/set command)
   G4int nbins = 100;
@@ -55,13 +61,13 @@ void AnalysisManager::Book()
   // as we have not yet set nbins, vmin, vmax
   G4int ih;
 //  for (G4int k=0; k<kMaxHisto; k++) {
-  for (G4int k=0; k<5; k++) {
-    ih = rootAnalysisManager1->CreateH1(id[k], title[k], nbins, vmin, vmax);
+  for (G4int k=0; k<kMaxH1; k++) {
+    ih = rootAnalysisManager1->CreateH1(id1[k], title1[k], nbins, vmin, vmax);
     rootAnalysisManager1->SetH1Activation(ih, true);
   }
 
-  for (G4int k=5; k<12; k++) {
-    ih = rootAnalysisManager1->CreateH2(id[k], title[k], 
+  for (G4int k=0; k<kMaxH2; k++) {
+    ih = rootAnalysisManager1->CreateH2(id2[k], title2[k], 
 				nbins, -vmax, vmax,   // bins'number, xmin, xmax
 				nbins, -vmax, vmax);  // bins'number, xmin, xmax
     rootAnalysisManager1->SetH2Activation(ih, true);

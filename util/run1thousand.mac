@@ -9,26 +9,27 @@
 #Detector
 
 #Physics
-/testem/phys/addPhysics emlivermore
+# /testem/phys/addPhysics emlivermore
 #/testem/phys/addPhysics empenelope
 #/process/eLoss/CSDARange true
 #/run/setCut 100 nm
 #/testem/phys/setCuts 1 um
-/cuts/setLowEdge 30 keV
+#/cuts/setLowEdge 30 keV
+/cuts/setLowEdge 5 MeV
 
 /run/initialize
 
-/process/em/deexcitation Target true true true
-/process/em/fluo true
-/process/em/auger true
-/process/em/pixe true
-/process/em/deexcitationIgnoreCut true
+#  /process/em/deexcitation Target true true true
+#  /process/em/fluo true
+#  /process/em/auger true
+#  /process/em/pixe true
+#  /process/em/deexcitationIgnoreCut true
 
 #/process/em/pixeXSmodel Empirical
 #/process/em/pixeXSmodel ECPSSR_FormFactor
 #/process/em/pixeXSmodel ECPSSR_Analytical
 #/process/em/pixeElecXSmodel Penelope
-/process/em/pixeElecXSmodel Livermore
+# /process/em/pixeElecXSmodel Livermore
 
 # Set guns
 #//  /gun/particle e-
@@ -53,10 +54,16 @@
 /analysis/h1/setYaxis 3 "Number of particles"
 /analysis/h1/setAscii 3
 
-/analysis/h1/set 4    4000  0.0   400.0  MeV #Source spectra [MeV]
+/analysis/h1/set 4    4000  0.0   10000.0  MeV #Electron spectra [MeV]
 /analysis/h1/setXaxis 4 "Energy [MeV]"
-/analysis/h1/setYaxis 4 "Number of particles"
+/analysis/h1/setYaxis 4 "Number of electrons"
 /analysis/h1/setAscii 4
+
+/analysis/h1/set 5    4000  0.0   10000.0  MeV #Positron spectra [MeV]
+/analysis/h1/setXaxis 5 "Energy [MeV]"
+/analysis/h1/setYaxis 5 "Number of positrons"
+/analysis/h1/setAscii 5
+
 
 /analysis/h2/set 1    100  -.01   .01    m  none  linear 100 -.01   .01   m  none linear #Source spectra [MeV]
 /analysis/h2/setXaxis 1 "Position X [m]"
@@ -85,5 +92,5 @@
 /analysis/h2/setYaxis 6 "Theta_Y [rad]"
 
 
-/run/printProgress 50000
-/run/beamOn 100000
+/run/printProgress 1000000
+/run/beamOn 10000000

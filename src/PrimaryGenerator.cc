@@ -90,7 +90,7 @@ G4double PrimaryGenerator::EnergyDist()
 
   // Setup beam parameters
 //  G4double emitt_n = 20; // Normalized emittance mm-mrad
-  G4double emitt_n = 0; // Normalized emittance mm-mrad
+  G4double emitt_n = 20; // Normalized emittance mm-mrad
   G4double emitt_g = emitt_n/(momentum*1000/GeV/0.511); // Geometric emittance mm-mrad
 //  G4cout << "Emitt_n  0 " << emitt_n << G4endl;
 //  G4cout << "Emitt_g  0 " << emitt_g << G4endl;
@@ -101,17 +101,17 @@ G4double PrimaryGenerator::EnergyDist()
 
   G4double r1, r2;
 
-//  boxmuller (r1, r2, 0, 1);
-  r1 = 0;
-  r2 = 0;
+  boxmuller (r1, r2, 0, 1);
+//  r1 = 0;
+//  r2 = 0;
   G4double pos_X = sigma_r*r1;
   G4double mom_X = sin(sigma_rv*r2); 
 
-//  boxmuller (r1, r2, 0, 1);
+  boxmuller (r1, r2, 0, 1);
   G4double pos_Y = sigma_r*r1;
   G4double mom_Y = sin(sigma_rv*r2); 
 
-//  boxmuller (r1, r2, 0, 1);
+  boxmuller (r1, r2, 0, 1);
 
   G4double pos_Z_center = -50*um;
   G4double pos_Z = sigma_z*r1 + pos_Z_center;

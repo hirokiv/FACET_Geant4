@@ -64,7 +64,6 @@ G4int SensitiveDetector::WriteBeamFile(G4String filename, G4ThreeVector position
 G4bool SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 {
   DetectorHit* newHit = new DetectorHit();
-  //G4cout << "New hit!" << G4endl;
 
   newHit->SetTrackID(aStep->GetTrack()->GetTrackID());
   newHit->SetParentID(aStep->GetTrack()->GetParentID());
@@ -88,9 +87,9 @@ G4bool SensitiveDetector::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   fHitsCollection->insert(newHit);
   //newHit->Print();
   ///////////////////////////////////////////////////////
-  G4String particleName = aStep->GetTrack()->GetParticleDefinition()->GetParticleName(); 
-  G4ThreeVector position_World = aStep->GetPostStepPoint()->GetPosition();
-  G4ThreeVector momentum_dir = aStep->GetPreStepPoint()->GetMomentumDirection();
+//  G4String particleName = aStep->GetTrack()->GetParticleDefinition()->GetParticleName(); 
+//  G4ThreeVector position_World = aStep->GetPostStepPoint()->GetPosition();
+//  G4ThreeVector momentum_dir = aStep->GetPreStepPoint()->GetMomentumDirection();
 //  G4double kin_energy = aStep->GetTrack()->GetKineticEnergy();
  // G4double time = aStep->GetPreStepPoint()->GetGlobalTime();
   // Write the position and time into the file for the QuickPIC input

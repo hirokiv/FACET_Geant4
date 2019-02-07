@@ -22,9 +22,8 @@ plt.rcParams["font.size"] = 16
 # Limiting the particles counted to be less than 0.1 rad
 
 # for specy_str in {"positron","elec_prm","elec_sec","photon"}:
-for specy_str in ["electron", "positron"]:
+for specy_str in ["beam_electron", "beam_positron"]:
   
-  shift_um = +10
   ##############################################
   # File ID
   ##############################################
@@ -42,7 +41,7 @@ for specy_str in ["electron", "positron"]:
   # Read out number of particles concerned
   ################################################
   # file type .txt
-  filename = "beam_d_" + specy_str + ".txt"
+  filename = specy_str + ".txt"
   chunk = np.genfromtxt(filename, dtype=float, delimiter='', names=None)
 
   CNT = num_lines = sum(1 for line in open(filename))
@@ -100,12 +99,13 @@ for specy_str in ["electron", "positron"]:
   yangle = np.arctan(rv)
    #######################################################
 # resave
-  rz = rz - shift_um*1e-6
-  A = np.hstack( (rx.reshape(CNT,1), ry.reshape(CNT,1), ru.reshape(CNT,1), rv.reshape(CNT,1), rz.reshape(CNT,1), re.reshape(CNT,1) ) )
-  print rx
-  print A
-  filestr = filename + '_shift_' + str(shift_um) + '_um.txt'
-  np.savetxt(filestr, A, fmt="%0.10f", delimiter="    ")
+  for shift_um in [0, +150]:
+    rz = rz - shift_um*1e-6
+    A = np.hstack( (rx.reshape(CNT,1), ry.reshape(CNT,1), ru.reshape(CNT,1), rv.reshape(CNT,1), rz.reshape(CNT,1), re.reshape(CNT,1) ) )
+#    print rx
+#    print A
+    filestr = filename + '_shift_' + str(shift_um) + '_um.txt'
+    np.savetxt(filestr, A, fmt="%12.5e  ", delimiter=" ")
 
   #######################################################
 #   fig5 = plt.plot( rz, re , "o")
@@ -113,21 +113,22 @@ for specy_str in ["electron", "positron"]:
 #   filename = specy_str + "_energy.png"
 #   fig5.savefig(filename,bbox_inches='tight')
 
-
+  print '========================='
   print 'Average in X'
-  print np.average(rx)
-  print np.sqrt(np.var(rx))
+  print ' mean   ' + str(np.average(rx)     )   
+  print ' sigma  ' + str(np.sqrt(np.var(rx))) 
   print 'Average in Y'
-  print np.average(ry)
-  print np.sqrt(np.var(ry))
+  print ' mean   ' + str(np.average(ry)     )
+  print ' sigma  ' + str(np.sqrt(np.var(ry))) 
   print 'Average of U'
-  print np.average(ru)
-  print np.sqrt(np.var(ru))
+  print ' mean   ' + str(np.average(ru)     )
+  print ' sigma  ' + str(np.sqrt(np.var(ru))) 
   print 'Average of V'
-  print np.average(rv)
-  print np.sqrt(np.var(rv))
+  print ' mean   ' + str(np.average(rv)     )
+  print ' sigma  ' + str(np.sqrt(np.var(rv))) 
   print 'Average of CT-Z'
-  print np.average(rz)
-  print np.sqrt(np.var(rz))
+  print ' mean   ' + str(np.average(rz)     )
+  print ' sigma  ' + str(np.sqrt(np.var(rz))) 
+  print '========================='
 
 

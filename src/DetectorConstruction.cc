@@ -18,17 +18,17 @@
 
 DetectorConstruction::DetectorConstruction()
   :G4VUserDetectorConstruction(), fCheckOverlaps(true), fWorldVolume(nullptr),
-   fTargetLogicalVolume(nullptr), fDetectorLogicalVolume(nullptr)
+   fTargetLogicalVolume(nullptr), fDetectorLogicalVolume(nullptr), fVirtualLogicalVolume(nullptr)
 {
   G4cout << "DetectorConstruction Constructor" << G4endl;
   fTargetXYSize = 10*cm;
   fTargetThickness = 1*mm;
   G4cout << "ComputeParameters" << G4endl;
   ComputeParameters();
-  SetWorldMaterial("G4_Galactic");
-  SetTargetMaterial("G4_Ta");
+  SetWorldMaterial   ("G4_Galactic");
+  SetTargetMaterial  ("G4_Ta");
   SetDetectorMaterial("G4_Galactic");
-  SetVirtualMaterial("G4_Galactic");
+  SetVirtualMaterial ("G4_Galactic");
 
   fDetectorMessenger = new DetectorMessenger(this);
 }
@@ -78,10 +78,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 //                                          0*degree,
 //                                          180*degree);
 
-  G4Box* solidDetector = new G4Box("Detector", fTargetXYSize/2, fTargetXYSize/2, fTargetThickness/2);
+  G4Box* solidDetector = new G4Box("Detector", fTargetXYSize/2, fTargetXYSize/2, fTargetThickness/20000000);
   fDetectorLogicalVolume = new G4LogicalVolume(solidDetector, fDetectorMaterial, "Detector");
   new G4PVPlacement(0,
-                    G4ThreeVector(0, 0, fTargetThickness/2 + fTargetThickness),
+                    G4ThreeVector(0, 0, fTargetThickness/20000000 + fTargetThickness),
                     fDetectorLogicalVolume,
                     "Detector",
                     lWorld,
@@ -192,6 +192,7 @@ void DetectorConstruction::SetDetectorMaterial(G4String mat){
 }
 
 void DetectorConstruction::SetVirtualMaterial(G4String mat){
+  G4cout << "Set Virtual Material" << G4endl;
   G4Material* newMat = SetMaterial(mat);
   if (newMat) {
     fVirtualMaterial = newMat;
