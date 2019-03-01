@@ -15,8 +15,8 @@ sh ../shell/comma2space.sh
 mv beam_electron.txt  beam_electron_temp.txt
 mv beam_positron.txt  beam_positron_temp.txt
 echo "make_QuickPIC.sh - Generating beam1 and beam2 " >> process.log
-cat beam_electron_temp.txt | sed -e '1000001,$d' > beam_electron.txt
-cat beam_positron_temp.txt | sed -e '1000001,$d' > beam_positron.txt
+cat beam_electron_temp.txt | sed -e '2000001,$d' > beam_electron.txt
+cat beam_positron_temp.txt | sed -e '2000001,$d' > beam_positron.txt
 rm  beam_electron_temp.txt
 rm  beam_positron_temp.txt
 
@@ -51,6 +51,14 @@ sed -e 's/e/E/g' beam1_temp.txt > beam1.txt
 sed -e 's/e/E/g' beam2_temp.txt > beam2.txt
 sed -e 's/e/E/g' beam3_temp.txt > beam3.txt
 sed -e 's/e/E/g' beam4_temp.txt > beam4.txt
+
+# Limit number of particles
+mv beam2.txt beam2_temp.txt
+mv beam3.txt beam3_temp.txt
+
+cat beam2_temp.txt | sed -e '500001,$d' > beam2.txt
+cat beam3_temp.txt | sed -e '500001,$d' > beam3.txt
+
 
 rm  -f beam?_temp.txt
 

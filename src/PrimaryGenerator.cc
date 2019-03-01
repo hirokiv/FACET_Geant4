@@ -95,7 +95,7 @@ G4double PrimaryGenerator::EnergyDist()
 //  G4cout << "Emitt_n  0 " << emitt_n << G4endl;
 //  G4cout << "Emitt_g  0 " << emitt_g << G4endl;
 
-  G4double sigma_r = 2*um; // beam radius
+  G4double sigma_r = 8*um; // beam radius
   G4double sigma_z = 6.5*um; // beam length
   G4double sigma_rv = emitt_g/(sigma_r/um); // rad
 

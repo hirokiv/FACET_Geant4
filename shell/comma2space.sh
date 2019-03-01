@@ -28,3 +28,4 @@ echo `wc -l beam_positron.txt`   >> process.log
 
 
 cat beam_electron_t0.txt > beam_electron.txt
+cat beam_electron_t1.txt >> beam_electron.txt

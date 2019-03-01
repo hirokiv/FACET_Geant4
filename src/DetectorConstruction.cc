@@ -15,19 +15,28 @@
 #include "G4NistManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4RunManager.hh"
+#include "G4UniformMagField.hh"
+#include "G4FieldManager.hh"
+#include "G4TransportationManager.hh"
+#include "G4Tubs.hh"
+#include "BrachyMaterial.hh"  // Stainless steel defined
 
 DetectorConstruction::DetectorConstruction()
   :G4VUserDetectorConstruction(), fCheckOverlaps(true), fWorldVolume(nullptr),
    fTargetLogicalVolume(nullptr), fDetectorLogicalVolume(nullptr), fVirtualLogicalVolume(nullptr)
 {
   G4cout << "DetectorConstruction Constructor" << G4endl;
-  fTargetXYSize = 10*cm;
-  fTargetThickness = 1*mm;
+  fTargetXYSize = 5*cm;
+  fTargetThickness = 1.0*mm;
   G4cout << "ComputeParameters" << G4endl;
   ComputeParameters();
+  pMat = new BrachyMaterial();
+  pMat->DefineMaterials();
   SetWorldMaterial   ("G4_Galactic");
   SetTargetMaterial  ("G4_Ta");
   SetDetectorMaterial("G4_Galactic");
+  SetMagnetMaterial  ("G4_Galactic");
+  SetTubeMaterial    ("StainlessSteel");
   SetVirtualMaterial ("G4_Galactic");
 
   fDetectorMessenger = new DetectorMessenger(this);
@@ -38,6 +47,9 @@ DetectorConstruction::~DetectorConstruction() {
 }
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
+
+
+
   // ==========================================================================
   //The world
   // ==========================================================================
@@ -91,18 +103,69 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   // fDetectorLogicalVolume->SetVisAttributes(G4VisAttributes::Invisible);
   
   // ==========================================================================
-  // Virtual detector
+  // Virtual detector just after the collimator
   // ==========================================================================
-  G4Box* solidVirtual = new G4Box("Virtual", fTargetXYSize/2, fTargetXYSize/2, fTargetThickness/2);
+  G4double const Dd = 0.5 * m; // Where we place the magnet
+  G4Box* solidVirtual = new G4Box("Virtual_temp", fTargetXYSize/2, fTargetXYSize/2, fTargetThickness/2);
   fVirtualLogicalVolume = new G4LogicalVolume(solidVirtual, fVirtualMaterial, "Virtual");
   new G4PVPlacement(0,
-                    G4ThreeVector(0, 0, fTargetThickness/2 + fTargetThickness + 1.*m),
+                    G4ThreeVector(0, 0, fTargetThickness/2 + Dd),
                     fVirtualLogicalVolume,
                     "Virtual",
+//                    "Virtual",
                     lWorld,
                     false,
                     0,
                     fCheckOverlaps);
+
+  // ==========================================================================
+  // Virtual detector for electrons
+  // ==========================================================================
+  G4RotationMatrix* yRot4e = new G4RotationMatrix;
+  G4double zp = (0.5 + 0.68) * m;
+  G4double xp = 0.18 * m;
+  G4double fDTiltSize = 20 * cm;
+  yRot4e->rotateY(-0.26*rad);
+  G4Box* solidDTilt = new G4Box("Virtual", fDTiltSize/2, fDTiltSize/2, fTargetThickness/2);
+  fDTiltLogicalVolume = new G4LogicalVolume(solidDTilt, fVirtualMaterial, "Virtual");
+
+  new G4PVPlacement(yRot4e,
+                    G4ThreeVector(xp, 0, zp),
+                    fDTiltLogicalVolume,
+                    "Virtual4e",
+//                    "Virtual",
+                    lWorld,
+                    false,
+                    0,
+                    fCheckOverlaps);
+  // ==========================================================================
+  // Virtual detector for positrons
+  // ==========================================================================
+  G4RotationMatrix* yRot4p = new G4RotationMatrix;
+  yRot4p->rotateY(0.26*rad);
+
+  new G4PVPlacement(yRot4p,
+                    G4ThreeVector(-xp, 0, zp),
+                    fDTiltLogicalVolume,
+                    "Virtual4p",
+                    lWorld,
+                    false,
+                    0,
+                    fCheckOverlaps); 
+//  // ==========================================================================
+//  // Virtual detector for gammas
+//  // ==========================================================================
+//  G4RotationMatrix* yRot4g = new G4RotationMatrix;
+//  yRot4g->rotateY(0*deg);
+//
+//  new G4PVPlacement(yRot4g,
+//                    G4ThreeVector(0, 0, fTargetThickness/2 + fTargetThickness + 2*dDist),
+//                    fVirtualLogicalVolume,
+//                    "Virtual4g",
+//                    lWorld,
+//                    false,
+//                    0,
+//                    fCheckOverlaps); 
 
 //  // ==========================================================================
 //  // Virtual detector2 for QuickPIC input
@@ -118,6 +181,53 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 //                    0,
 //                    fCheckOverlaps);
 
+  // ==========================================================================
+  // Dipole magnet
+  // ==========================================================================
+    G4double const Tesla = volt*second/meter2; // Define tesla
+    G4double fMRMin =   0.0*cm;
+    G4double fMRMax =  30.0*cm; // Magnet radius
+    G4double fMDz   =  20.0*cm; // Thickness
+    G4double fMSPhi =   0.0*deg;
+    G4double fMDPhi = 180.0*deg;
+//    G4Box* solidMagnet = new G4Box("Virtual", fMRMax/2, fMRMax/2, fMRMax/2);
+    G4VSolid* solidMagnet = new G4Tubs("Magnet", fMRMin, fMRMax, fMDz/2, fMSPhi, fMDPhi);
+    fMagnetLogicalVolume = new G4LogicalVolume(solidMagnet, fMagnetMaterial, "Magnet");
+  
+    G4MagneticField* magField = new G4UniformMagField( G4ThreeVector(0.0, 0.5 * Tesla, 0.0 ));
+  //  G4FieldManager* globalFieldMgr = G4TransportationManager::GetTransportationManager()->GetFieldManager();
+    G4FieldManager* localFieldMgr = new G4FieldManager(magField);
+    fMagnetLogicalVolume->SetFieldManager(localFieldMgr, true);
+  //  globalFieldMgr->SetDetectorField(magField);
+    G4RotationMatrix* xRot = new G4RotationMatrix;
+    xRot->rotateX(-90*deg);
+    new G4PVPlacement(xRot,
+                      G4ThreeVector(0, 0, fTargetThickness/2 +  fTargetThickness + Dd),
+                      fMagnetLogicalVolume,
+                      "Magnet",
+                      lWorld,
+                      false,
+                      0,
+                      fCheckOverlaps);
+
+  // ==========================================================================
+  // Collimater
+  // ==========================================================================
+  G4double fCRMin =  5.0*cm;
+  G4double fCRMax =  7.0*cm;
+  G4double fCDz   = Dd;
+  G4double fCSPhi =   0.0*deg;
+  G4double fCDPhi = 360.0*deg;
+  G4VSolid* solidTube = new G4Tubs("Tube", fCRMin, fCRMax, fCDz/2, fCSPhi, fCDPhi);
+  fTubeLogicalVolume = new G4LogicalVolume(solidTube, fTubeMaterial, "Tube");
+  new G4PVPlacement(0,
+                    G4ThreeVector(0, 0, fCDz/2),
+                    fTubeLogicalVolume,
+                    "Tube",
+                    lWorld,
+                    false,
+                    0,
+                    fCheckOverlaps);
 
   return fWorldVolume;
 }
@@ -133,7 +243,8 @@ void DetectorConstruction::ConstructSDandField() {
   G4SDManager::GetSDMpointer()->AddNewDetector(sDetector);
 
   SensitiveVirtual* sVirtual = new SensitiveVirtual("Virtual", "VirtualHitsCollection");
-  SetSensitiveDetector(fVirtualLogicalVolume, sVirtual);
+//  SetSensitiveDetector(fVirtualLogicalVolume, sVirtual);
+  SetSensitiveDetector(fDTiltLogicalVolume, sVirtual);
   G4SDManager::GetSDMpointer()->AddNewDetector(sVirtual);
 
 //  SensitiveVirtual* sQPIC = new SensitiveVirtual("QPIC", "VirtualHitsCollection");
@@ -146,8 +257,8 @@ void DetectorConstruction::DefineMaterials() {
 }
 
 void DetectorConstruction::ComputeParameters(){
-  fDetectorRadius = fTargetXYSize*1.5;
-  fWorldRadius = fDetectorRadius*15.;
+//  fDetectorRadius = fTargetXYSize*1.5;
+  fWorldRadius = 250.0 * cm;
 }
 
 G4Material* DetectorConstruction::SetMaterial(G4String mat){ G4cout << "Set material" << G4endl;
@@ -196,6 +307,26 @@ void DetectorConstruction::SetVirtualMaterial(G4String mat){
   G4Material* newMat = SetMaterial(mat);
   if (newMat) {
     fVirtualMaterial = newMat;
+  }
+  G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}
+
+void DetectorConstruction::SetMagnetMaterial(G4String mat){
+  G4cout << "Set Magnet Material" << G4endl;
+  G4Material* newMat = SetMaterial(mat);
+  if (newMat) {
+    fMagnetMaterial = newMat;
+  }
+  G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}
+
+void DetectorConstruction::SetTubeMaterial(G4String mat){
+  G4cout << "Set Tube Material" << G4endl;
+//  G4Material* newMat = SetMaterial(mat);
+  G4Material* newMat = pMat->GetMat(mat);// SetMaterial(mat);
+  if (newMat) {
+    fTubeMaterial = newMat;
+    G4cout << "Set Tube Material called" << G4endl;
   }
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }
