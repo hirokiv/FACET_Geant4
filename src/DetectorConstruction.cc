@@ -123,6 +123,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   // ==========================================================================
   G4RotationMatrix* yRot4e = new G4RotationMatrix;
   G4double zp = (0.5 + 0.68) * m;
+//  G4double zp = (0.5 + 0.68) * m;
   G4double xp = 0.18 * m;
   G4double fDTiltSize = 20 * cm;
   yRot4e->rotateY(-0.26*rad);
@@ -213,7 +214,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   // ==========================================================================
   // Collimater
   // ==========================================================================
-  G4double fCRMin =  5.0*cm;
+  G4double fCRMin =  6.0*cm;
   G4double fCRMax =  7.0*cm;
   G4double fCDz   = Dd;
   G4double fCSPhi =   0.0*deg;
@@ -239,12 +240,13 @@ void DetectorConstruction::ConstructSDandField() {
   G4SDManager::GetSDMpointer()->AddNewDetector(sTarget);
 
   SensitiveDetector* sDetector = new SensitiveDetector("Detector", "DetectorHitsCollection");
-  SetSensitiveDetector(fDetectorLogicalVolume, sDetector);
+//  SetSensitiveDetector(fDetectorLogicalVolume, sDetector);
+  SetSensitiveDetector(fVirtualLogicalVolume, sDetector);
   G4SDManager::GetSDMpointer()->AddNewDetector(sDetector);
 
   SensitiveVirtual* sVirtual = new SensitiveVirtual("Virtual", "VirtualHitsCollection");
-//  SetSensitiveDetector(fVirtualLogicalVolume, sVirtual);
-  SetSensitiveDetector(fDTiltLogicalVolume, sVirtual);
+  SetSensitiveDetector(fVirtualLogicalVolume, sVirtual);
+//  SetSensitiveDetector(fDTiltLogicalVolume, sVirtual);
   G4SDManager::GetSDMpointer()->AddNewDetector(sVirtual);
 
 //  SensitiveVirtual* sQPIC = new SensitiveVirtual("QPIC", "VirtualHitsCollection");

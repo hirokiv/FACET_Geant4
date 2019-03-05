@@ -37,6 +37,8 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #
 add_executable(ebeam main.cc ${sources} ${headers})
 target_link_libraries(ebeam ${Geant4_LIBRARIES})
+target_link_libraries(ebeam hdf5)
+target_link_libraries(ebeam hdf5_cpp)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
