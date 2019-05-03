@@ -1,0 +1,31 @@
+/control/verbose 2
+#/control/cout/useBuffer
+/run/verbose 2
+/event/verbose 2
+/tracking/verbose 2
+
+#Physics
+#/testem/phys/addPhysics emlivermore
+#/testem/phys/addPhysics empenelope
+#/process/eLoss/CSDARange true
+#/run/setCut 100 nm
+#/testem/phys/setCuts 1 um
+#/cuts/setLowEdge 30 keV
+/cuts/setLowEdge 5 MeV
+
+#This must be run before initialization
+#/FACET/targetMaterial G4_Ta
+#/FACET/targetMaterial G4_Galactic
+/FACET/targetMaterial G4_Al
+
+/FACET/tubeMaterial G4_Galactic
+/FACET/targetThickness 10 mm
+/FACET/fieldStrength 100 tesla
+/FACET/fieldWavelength 2. um
+
+/testem/phys/stepMax 1 um
+/primary/momentum 10. GeV
+/primary/sigr 10000. um
+/primary/sigz 13. um
+/primary/emittance 20
+
