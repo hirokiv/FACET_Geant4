@@ -11,12 +11,15 @@
 #include "G4SystemOfUnits.hh"
 #include "CSVReader.hh"
 #include "globals.hh"
-#include "ParticleH5FileReader.hh"
 
+#include "PrimaryGeneratorMessenger.hh"
+//#include "ParticleH5FileReader.hh"
 class ParticleH5Filereader; 
+
 
 //------------------------------------------------------------------------------
   PrimaryGenerator::PrimaryGenerator()
+    : fMomentum(10000.0*MeV), fSig_r(10.*um), fSig_z(13.*um), fEmitt_n(20.)
 //  : fpParticleGPS(0) 
 //------------------------------------------------------------------------------
 {
@@ -43,8 +46,8 @@ class ParticleH5Filereader;
 //        G4cout<<G4endl;
     }
 //    ParticleH5Filereader ph5 = ParticleH5FileReader();
-    ph5 = ParticleH5FileReader();
  
+ fParticleMessenger = new PrimaryGeneratorMessenger(this);
 }
 
 //------------------------------------------------------------------------------
@@ -53,6 +56,7 @@ class ParticleH5Filereader;
 {
 //  delete fpParticleGun;
 //  delete fpParticleGPS;
+  delete fParticleMessenger;
 }
 
 void boxmuller (G4double& z1, G4double& z2, G4double mu,G4double sigma) {
@@ -78,16 +82,18 @@ G4double PrimaryGenerator::EnergyDist()
   G4int n = 0;
   while ( rnd > CDF[n] ) n = n + 1;
   G4double weight = (CDF[n] - rnd)/(CDF[n] - CDF[n-1]);
-  G4double momentum = en_list[n-1]*weight + en_list[n]*(1-weight);
-  return momentum/1000.; // Turn into GeV
+  fMomentum = en_list[n-1]*weight + en_list[n]*(1-weight);
+  return fMomentum/1000.; // Turn into GeV
 }
 
 //------------------------------------------------------------------------------
   void PrimaryGenerator::GeneratePrimaries(G4Event* anEvent)
 //------------------------------------------------------------------------------
 {
-//  PrimaryGenerator::ElectronGun( anEvent );
-  PrimaryGenerator::ReadH5( anEvent );
+  PrimaryGenerator::ElectronGun( anEvent );
+
+//    ph5.StoreFiles();
+//  PrimaryGenerator::ReadH5( anEvent );
 }
 
 void PrimaryGenerator::ReadH5(G4Event* anEvent){
@@ -141,21 +147,24 @@ void PrimaryGenerator::ElectronGun(G4Event* anEvent){
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   // Setup for primary particle
   G4String particleName = "e-";
+  G4double r1, r2; // Random number variables
+
 //  G4double momentum = PrimaryGenerator::EnergyDist()*GeV;
-  G4double momentum = 10.0*GeV;
+//  G4double momentum = 10000.0*MeV;
+  boxmuller (r1, r2, 0, 1);
+  G4double momentum = fMomentum + 0.00 * fMomentum * r1; // Assume 0.1 % energy spread
 
   // Setup beam parameters
 //  G4double emitt_n = 20; // Normalized emittance mm-mrad
-  G4double emitt_n = 20; // Normalized emittance mm-mrad
+  G4double emitt_n = fEmitt_n; // Normalized emittance mm-mrad
   G4double emitt_g = emitt_n/(momentum*1000/GeV/0.511); // Geometric emittance mm-mrad
 //  G4cout << "Emitt_n  0 " << emitt_n << G4endl;
 //  G4cout << "Emitt_g  0 " << emitt_g << G4endl;
 
-  G4double sigma_r = 8*um; // beam radius
-  G4double sigma_z = 6.5*um; // beam length
+  G4double sigma_r = fSig_r; // beam radius
+  G4double sigma_z = fSig_z; // beam length
   G4double sigma_rv = emitt_g/(sigma_r/um); // rad
 
-  G4double r1, r2;
 
   boxmuller (r1, r2, 0, 1);
 //  r1 = 0;

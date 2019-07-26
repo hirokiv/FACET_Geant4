@@ -23,6 +23,7 @@
   public:
     ParticleH5FileReader();    
    ~ParticleH5FileReader();
+    void StoreFiles();    
     void AddCount();
 //    boost::multi_array<double,2> READ_H5(std::string filename, std::string field, int verbose = 0);
     boost::multi_array<double,2>  READ_H5(G4double *out,  std::string filename, std::string field, int verbose = 0);

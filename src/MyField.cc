@@ -33,9 +33,18 @@ void MyField::GetFieldValue( const G4double point[4], G4double *field) const
 //        ( (point[2] < fTargetThickness)   && (point[2] > 0                ))
 //       )
 //    {
-    field[0] = fAmp * cos( k * point[1]); //amp * sin( k * point[0]);
-    field[1] = fAmp * sin( k * point[0]);
-    field[2] = 0; 
+	G4double AxialGrowth;
+        G4double z0 = 0.5*mm; // Center of teh erf function
+        G4double zsat = 0.75*mm; //Saturate at 0.75
+        if (point[0] < z0) 
+          AxialGrowth = 1 + erf((point[2]-z0)/(zsat-z0)*2)/2;
+        else 
+	  AxialGrowth = 1;
+        
+        field[0] = AxialGrowth * fAmp * cos( k * point[1]); //amp * sin( k * point[0]);
+        field[1] = 0;//fAmp * sin( k * point[0]);
+        field[2] = 0; 
+
 //    }else{ 
 //        field[0] = 0;
 //        field[0] = 0;

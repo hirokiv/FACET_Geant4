@@ -8,6 +8,7 @@
 #include "G4VUserDetectorConstruction.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "BrachyMaterial.hh"
+#include "G4Cache.hh"
 
 class G4VPhysicalVolume;
 class DetectorMessenger;
@@ -15,6 +16,7 @@ class G4LogicalVolume;
 class G4Material;
 class G4MagneticField;
 class BrachyMaterial;
+class F03FieldSetup;
 
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -31,14 +33,24 @@ public:
   void SetDetectorMaterial(G4String);
   void SetMagnetMaterial(G4String);
   void SetTubeMaterial(G4String);
+  void SetTargetThickness(G4double);
+
+  void SetFieldStrength(G4double);
+  void SetFieldWavelength(G4double);
 
   void SetTargetXYSize(G4double size) {fTargetXYSize = size; ComputeParameters();}
-  void SetTargetThickness(G4double val) {fTargetThickness = val;}
   G4Material* SetMaterial(G4String);
+
+  void SetInstability(G4bool);
+  void SetMagneticFieldInsideTarget();
+  void SetMaxStep(G4double);
+  void SetNReplicas_z(G4int);
 
 private:
   void DefineMaterials();
   void ComputeParameters();
+  G4Cache<F03FieldSetup*>  fEmFieldSetup;
+  
 
   G4bool fCheckOverlaps;
 
@@ -49,8 +61,10 @@ private:
   G4LogicalVolume* fMagnetLogicalVolume;
   G4LogicalVolume* fTubeLogicalVolume;
   G4LogicalVolume* fDTiltLogicalVolume;
+  G4LogicalVolume* fMFieldLogicalVolume;
 
 //  G4LogicalVolume* fQPICLogicalVolume;
+  BrachyMaterial* pMat;
 
   G4Material* fWorldMaterial;
   G4Material* fTargetMaterial;
@@ -61,11 +75,20 @@ private:
 
   G4double fTargetXYSize;
   G4double fTargetThickness;
+  G4double fVirtualThickness;
+  G4double fVirtualMargin;
   G4double fWorldRadius;
   G4double fDetectorRadius;
   DetectorMessenger* fDetectorMessenger;
 
-  BrachyMaterial* pMat;
+  // Sinosoidal magnetic field characteristics
+  G4double fAmp;
+  G4double fLambda;
+  G4bool fInstability; // Switch if we turn on the field inside the target
+  G4UserLimits* fStepLimit;
+
+  G4int fnReplicas_z;
+
 };
 
 #endif // DETECTORCONSTRUCTION_H

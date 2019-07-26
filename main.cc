@@ -40,6 +40,8 @@ int main(int argc, char *argv[])
   //User interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
+  UImanager->ApplyCommand("/control/execute ../util/FACET_initial.mac");
+  UImanager->ApplyCommand("/control/execute ../util/FACET_Analysis.mac");
   if (argc!=1)
     {
       //batch mode

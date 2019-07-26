@@ -1,8 +1,10 @@
+/run/numberOfThreads 1
+
 /control/verbose 2
 #/control/cout/useBuffer
-/run/verbose 2
-/event/verbose 2
-/tracking/verbose 2
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
 
 #Physics
 #/testem/phys/addPhysics emlivermore
@@ -11,21 +13,46 @@
 #/run/setCut 100 nm
 #/testem/phys/setCuts 1 um
 #/cuts/setLowEdge 30 keV
-/cuts/setLowEdge 5 MeV
+#/cuts/setLowEdge 1000 MeV
 
 #This must be run before initialization
-#/FACET/targetMaterial G4_Ta
 #/FACET/targetMaterial G4_Galactic
 /FACET/targetMaterial G4_Al
+# /FACET/targetMaterial G4_Sr
+/FACET/tubeMaterial StainlessSteal
 
-/FACET/tubeMaterial G4_Galactic
-/FACET/targetThickness 10 mm
-/FACET/fieldStrength 100 tesla
-/FACET/fieldWavelength 2. um
+# Magnetic field due to instability is defined here
+/FACET/instability false
+/FACET/targetThickness 1.5 mm
+/FACET/fieldStrength 100. tesla
+/FACET/fieldWavelength .25 um
+/FACET/stepMax 0.1 um
+/FACET/nReplicas_z 100
 
-/testem/phys/stepMax 1 um
-/primary/momentum 10. GeV
-/primary/sigr 10000. um
-/primary/sigz 13. um
-/primary/emittance 20
+# particles class is added after the initialization
+/run/initialize
+
+/primary/momentum 10000. MeV
+/primary/sigr 1.285 um
+/primary/sigz 4.8 um
+/primary/emittance 3.
+
+#  /process/em/deexcitation Target true true true
+#  /process/em/fluo true
+#  /process/em/auger true
+#  /process/em/pixe true
+#  /process/em/deexcitationIgnoreCut true
+
+#/process/em/pixeXSmodel Empirical
+#/process/em/pixeXSmodel ECPSSR_FormFactor
+#/process/em/pixeXSmodel ECPSSR_Analytical
+#/process/em/pixeElecXSmodel Penelope
+# /process/em/pixeElecXSmodel Livermore
+
+# Set guns
+#//  /gun/particle e-
+#//  /gun/energy 10 GeV
+#//  /gun/position 0. 0. -50. um
+#//  /gun/direction 0. 0. 1.
+
 

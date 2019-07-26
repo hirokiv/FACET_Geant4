@@ -36,8 +36,11 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-StepMax::StepMax(const G4String& processName, G4ProcessType type)
- : G4VDiscreteProcess(processName,type),fMess(0)
+// Refer to F04
+//StepMax::StepMax(const G4String& processName, G4ProcessType type)
+// : G4VDiscreteProcess(processName,type),fMess(0)
+StepMax::StepMax(const G4String& aName)
+ : G4VDiscreteProcess(aName),fMaxChargedStep(DBL_MAX),fMess(0)
 {
   fMaxStep1 = fMaxStep2 = DBL_MAX;
   fApplyMaxStep2 = true;
@@ -66,6 +69,10 @@ void StepMax::SetMaxStep2(G4double step) {fMaxStep2 = step;}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void StepMax::ApplyMaxStep2(G4bool value) {fApplyMaxStep2 = value;}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void StepMax::SetStepMax(G4double step) {fMaxChargedStep = step;}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

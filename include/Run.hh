@@ -18,6 +18,7 @@ public:
 
   virtual void RecordEvent(const G4Event*);
   virtual void Merge(const G4Run*);
+  void WriteParticlesInfo();
 
   G4int GetNumberOfEvents() {return fNumberOfEvents;}
 
@@ -25,10 +26,23 @@ private:
   G4int fHCID1;
   G4int fHCID2;
   G4int fHCID3;
+  G4int fHCID4;
   G4int                 fNumberOfEvents;
+  // In-house emittance calculation for the electrons
+  G4int emitt_N; // # of emittance calculations
+  G4double E_N; //GeV
+  G4double E_range; // \pm E_range %
+
+  std::vector<G4double> xx2;          // um
+  std::vector<G4double> vx2;        // rad
+  std::vector<G4double> xvx; // mm-mrad
+  std::vector<G4double> E_count; // Number of electrons used for the calculation
+
   G4RootAnalysisManager* rootAnalysisManager1;
   G4RootAnalysisManager* rootAnalysisManager2;
   G4CsvAnalysisManager*  csvAnalysisManager;
+
+
 };
 
 

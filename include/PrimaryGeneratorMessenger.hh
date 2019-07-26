@@ -37,7 +37,7 @@
 
 class G4UIcmdWithAString;
 class G4UIcmdWithADoubleAndUnit;
-
+class G4UIcmdWithADouble;
 class PrimaryGenerator;
 
 class PrimaryGeneratorMessenger : public G4UImessenger
@@ -60,7 +60,7 @@ class PrimaryGeneratorMessenger : public G4UImessenger
     G4UIcmdWithADoubleAndUnit* fSetMomentumCmd;
     G4UIcmdWithADoubleAndUnit* fSetSigrCmd;
     G4UIcmdWithADoubleAndUnit* fSetSigzCmd;
-    G4UIcmdWithADoubleAndUnit* fSetEmittanceCmd;
+    G4UIcmdWithADouble* fSetEmittanceCmd;
 };
 
 #endif

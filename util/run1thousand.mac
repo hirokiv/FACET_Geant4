@@ -93,4 +93,4 @@
 
 
 /run/printProgress 300000
-/run/beamOn 100000
+/run/beamOn 60000000

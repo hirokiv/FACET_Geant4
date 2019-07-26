@@ -66,6 +66,9 @@
 #include "G4BuilderType.hh"
 #include "G4SystemOfUnits.hh"
 
+#include "G4SynchrotronRadiation.hh"
+#include "G4SynchrotronRadiationInMat.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PhysListEmStandard::PhysListEmStandard(const G4String& name)
@@ -118,6 +121,8 @@ void PhysListEmStandard::ConstructProcess()
       ph->RegisterProcess(eIoni, particle);
       //
       ph->RegisterProcess(new G4eBremsstrahlung(), particle);      
+//      ph->RegisterProcess(new G4SynchrotronRadiation(), particle);      
+      ph->RegisterProcess(new G4SynchrotronRadiationInMat(), particle);      
             
     } else if (particleName == "e+") {
     
@@ -128,6 +133,8 @@ void PhysListEmStandard::ConstructProcess()
       ph->RegisterProcess(eIoni, particle);
       ph->RegisterProcess(new G4eBremsstrahlung(), particle);
       ph->RegisterProcess(new G4eplusAnnihilation(), particle);    
+ //     ph->RegisterProcess(new G4SynchrotronRadiation(), particle);      
+      ph->RegisterProcess(new G4SynchrotronRadiationInMat(), particle);      
                   
     } else if (particleName == "mu+" || 
                particleName == "mu-"    ) {

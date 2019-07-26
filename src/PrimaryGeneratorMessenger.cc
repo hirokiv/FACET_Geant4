@@ -31,6 +31,7 @@
 
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
+#include "G4UIcmdWithADouble.hh"
 #include "G4SystemOfUnits.hh"
 
 #include "PrimaryGenerator.hh"
@@ -86,7 +87,7 @@ PrimaryGeneratorMessenger::
   fSetSigzCmd->SetDefaultValue(13.0*um);
   fSetSigzCmd->SetDefaultUnit("um");
 
-  fSetEmittanceCmd = new G4UIcmdWithADoubleAndUnit("/primary/emittance",this);
+  fSetEmittanceCmd = new G4UIcmdWithADouble("/primary/emittance",this);
   fSetEmittanceCmd->SetGuidance(" Set Normalized emittance in mm-mrad .");
   fSetEmittanceCmd->SetParameterName("emitt",true);
   fSetEmittanceCmd->SetDefaultValue(20.0);

@@ -9,11 +9,14 @@ import numpy as np
 ##################################################
 # FLAGS
 ##################################################
-DNUM = 20 
+DNUM = 60 
 TRAPFLAG  = 0  # if you count only trapped particles or not
 ##################################################
-INCIDENT_DRI = 12000000./11846777. * 1000000.
-INCIDENT_TRA = 27000000./1170586.  * 1000000.
+# ncount shows the number of particles every 1 million incident particles
+Incident = 60000000
+
+INCIDENT_DRI = Incident/62705509. * 1000000.
+INCIDENT_TRA = Incident/ 2201001. * 1000000.
 #################################################
 
 # Fontsize of figs 
@@ -25,22 +28,11 @@ filename = 'EGS5_ebin_output_dnum' + '%04d' % DNUM + '.txt'
 # Limiting the particles counted to be less than 0.1 rad
 
 # for specy_str in {"positron","elec_prm","elec_sec","photon"}:
-for specy_str in ["gamma___"]:
+for specy_str in ["positron"]:
   
   ##############################################
   # File ID
   ##############################################
-  # fid = open(filename, 'w')
-  # fid.writelines('EBIN[MeV]; X[um]; U[mrad]; Y[um]; V[mrad]; Ratio per incident electrons')
-  # fid.write('\n')
-  # fid.writelines( '%04d' % DNUM )
-  # fid.write('\n\n')
-  
-  # fid.writelines(specy_str)
-  # fid.write('\n')
-  
-  
-  
   if specy_str in "electron":
     spidx = 0
     ncount = INCIDENT_DRI
@@ -64,34 +56,14 @@ for specy_str in ["gamma___"]:
   CNT = num_lines = sum(1 for line in open(filename))
  
   # Set bin for every NPB particles
-  NPB = int(CNT/DNUM)+1
+  NPB = int(CNT/DNUM) + 1
   
-  print "medcnt   :",CNT
+  print "CNT     :",CNT
   print "medcnt/",DNUM,":",NPB
   ################################################
   # Read out particles data, and store to 
   # the individual variables
   ################################################
-#    # file type binary
-#      dt = np.dtype([head, ("re","<d"), ("rx","<d"), ("ry","<d"), ("rz","<d"), ("ru","<d"), ("rv","<d"), ("rw","<d"), ("rt","<d"), tail])
-#      filename = "bin_" + specy_str + ".dat"
-#  
-#    fd = open(filename,"r")
-#    
-#    chunk = np.fromfile(fd, dtype=dt, count=CNT)
-#    print "============================================="
-#    print "Example output to check if file read properly"
-#    for i in [6]:
-#      print "re:",chunk[i]["re"]
-#      print "rx:",chunk[i]["rx"]
-#      print "ry:",chunk[i]["ry"]
-#      print "rz:",chunk[i]["rz"]
-#      print "ru:",chunk[i]["ru"]
-#      print "rv:",chunk[i]["rv"]
-#      print "rw:",chunk[i]["rw"]
-#      print "time:",chunk[i]["rt"]
-#    print "============================================="
-#  # arr = chunk[0]["arr"].reshape((5,1),order="F")
 
 
   ebin = np.zeros(CNT)
@@ -104,19 +76,11 @@ for specy_str in ["gamma___"]:
   rw = np.zeros(CNT)
 
   for j in range(CNT):
-#    re[j] = chunk[j]["re"]        # Energy in MeV
-#    rx[j] = chunk[j]["rx"]        # pos x in cm
-#    ry[j] = chunk[j]["ry"]        # pos y in cm
-#    rz[j] = chunk[j]["rz"]        # pos z in cm
-#    ru[j] = chunk[j]["ru"]        # vel x in cos
-#    rv[j] = chunk[j]["rv"]        # vel y in cos
-#    rw[j] = chunk[j]["rw"]        # vel z in cos
     rx[j] = chunk[j][0]*100        # pos x in cm
     ry[j] = chunk[j][1]*100        # pos y in cm
     ru[j] = chunk[j][2]        # vel x in cos
     rv[j] = chunk[j][3]        # vel y in cos
     rz[j] = chunk[j][4]*100   # pos ct-z in cm
-    #    rw[j] = chunk[j][6]        # vel z in cos
     re[j] = (chunk[j][5])*0.511        # Energy in MeV
 
   #################################################### 
@@ -192,6 +156,8 @@ for specy_str in ["gamma___"]:
   # Emittance arrays
   xgemit = np.zeros(int(max(ebin)))
   ygemit = np.zeros(int(max(ebin)))
+  xnemit = np.zeros(int(max(ebin)))
+  ynemit = np.zeros(int(max(ebin)))
   
   xsig = np.zeros(int(max(ebin)))
   usig = np.zeros(int(max(ebin)))
@@ -231,6 +197,8 @@ for specy_str in ["gamma___"]:
     # Convert the unit of geometric emitt. from cm-rad to mm-mrad
     xgemit[k] = np.sqrt(x2*u2-xu*xu)*10000 # mm-mrad 
     ygemit[k] = np.sqrt(y2*v2-yv*yv)*10000 # mm-mrad 
+    xnemit[k] = xgemit[k]*(eidx[k]/0.511+1) # mm-mrad 
+    ynemit[k] = ygemit[k]*(eidx[k]/0.511+1) # mm-mrad 
     xsig[k] = np.sqrt(x2)*10000 # um
     usig[k] = np.sqrt(u2)*1000 # mrad
     ysig[k] = np.sqrt(y2)*10000 # um
@@ -354,6 +322,9 @@ for specy_str in ["gamma___"]:
   
   np.savetxt(specy_str+'xgemit.csv',xgemit,delimiter=',')
   np.savetxt(specy_str+'ygemit.csv',ygemit,delimiter=',')
+  np.savetxt(specy_str+'xnemit.csv',xnemit,delimiter=',')
+  np.savetxt(specy_str+'ynemit.csv',ynemit,delimiter=',')
+
   np.savetxt(specy_str+'eidx.csv',eidx,delimiter=',')
   np.savetxt(specy_str+'avsp.csv',avsp,delimiter=',')
   np.savetxt(specy_str+'xsig.csv',xsig,delimiter=',')
@@ -415,7 +386,6 @@ for specy_str in ["gamma___"]:
  
 
   
-#  
 #  ## Output to file
 #  def d2s(data):
 #  #  panda_data = pd.DataFrame(data)

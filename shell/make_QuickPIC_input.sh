@@ -10,15 +10,22 @@ echo "======================================" >> process.log
 echo "make_QuickPIC.sh call comma2space.sh" >> process.log
 echo "- particles numbers will be truncated   " >> process.log 
 echo "======================================" >> process.log
-sh ../shell/comma2space.sh
-
-mv beam_electron.txt  beam_electron_temp.txt
-mv beam_positron.txt  beam_positron_temp.txt
 echo "make_QuickPIC.sh - Generating beam1 and beam2 " >> process.log
+
+sh ../shell/comma2space_electron.sh
+mv beam_electron.txt  beam_electron_temp.txt
 cat beam_electron_temp.txt | sed -e '2000001,$d' > beam_electron.txt
-cat beam_positron_temp.txt | sed -e '2000001,$d' > beam_positron.txt
 rm  beam_electron_temp.txt
+
+sh ../shell/comma2space_positron.sh
+mv beam_positron.txt  beam_positron_temp.txt
+cat beam_positron_temp.txt | sed -e '2000001,$d' > beam_positron.txt
 rm  beam_positron_temp.txt
+
+sh ../shell/comma2space_prim_ele.sh
+mv beam_prim_ele.txt  beam_prim_ele_temp.txt
+cat beam_prim_ele_temp.txt | sed -e '2000001,$d' > beam_prim_ele.txt
+rm  beam_prim_ele_temp.txt
 
 echo "======================================" >> process.log
 echo "beam3 & beam4 created"                  >> process.log
@@ -28,7 +35,9 @@ echo "======================================" >> process.log
 echo "======================================" >> process.log
 echo "make_QuickPIC.sh call inject_params.py" >> process.log
 echo "======================================" >> process.log
-python ../python/inject_params.py >> process.log
+python ../python/inject_params.py "beam_electron" >> process.log
+python ../python/inject_params.py "beam_positron" >> process.log
+
 
 # Register shifted beam file as beam3 and beam 4
 cat beam_electron.txt_shift_150*  > beam1.txt

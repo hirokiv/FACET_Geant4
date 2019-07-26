@@ -45,16 +45,24 @@ PhysicsListMessenger::PhysicsListMessenger(PhysicsList* pPhys)
  fPhysDir(0), fListCmd(0)
 {
   fPhysDir = new G4UIdirectory("/testem/phys/");
-  fPhysDir->SetGuidance("physics list commands");
+  fPhysDir->SetGuidance("Control the physics lists");
   
   fListCmd = new G4UIcmdWithAString("/testem/phys/addPhysics",this);  
   fListCmd->SetGuidance("Add modula physics list.");
   fListCmd->SetParameterName("PList",false);
   fListCmd->AvailableForStates(G4State_PreInit);
   fListCmd->SetToBeBroadcasted(false);        
+
+  fStepMaxCMD = new G4UIcmdWithADoubleAndUnit("/testem/phys/stepMax",this);
+  fStepMaxCMD->SetGuidance("Set max. step length in the detector");
+  fStepMaxCMD->SetParameterName("mxStep",false);
+  fStepMaxCMD->SetUnitCategory("Length");
+  fStepMaxCMD->SetRange("mxStep>0.0");
+  fStepMaxCMD->SetDefaultUnit("mm");
+  fStepMaxCMD->AvailableForStates(G4State_PreInit,G4State_Idle);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//.s...oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PhysicsListMessenger::~PhysicsListMessenger()
 {
@@ -68,6 +76,11 @@ void PhysicsListMessenger::SetNewValue(G4UIcommand* command, G4String newValue)
 {       
   if( command == fListCmd )
    { fPhysicsList->AddPhysicsList(newValue);}
+
+  if( command == fStepMaxCMD ) 
+  {
+    fPhysicsList->SetStepMax( fStepMaxCMD->GetNewDoubleValue(newValue));
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

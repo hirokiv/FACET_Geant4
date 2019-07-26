@@ -34,6 +34,7 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 void RunAction::EndOfRunAction(const G4Run* run)
 {
   Run* aRun = (Run*)run;
+  aRun->WriteParticlesInfo();
   G4RootAnalysisManager* rootAnalysisManager = G4RootAnalysisManager::Instance();
   // save histograms
   if ( rootAnalysisManager->IsActive() ) {

@@ -27,29 +27,71 @@ void AnalysisManager::Book()
   rootAnalysisManager1->SetActivation(true);
 
 
-  const G4int kMaxH1 = 6;
-  const G4int kMaxH2 = 7;
-  const G4String id1[] = {"dummy", "edep", "espec", "ang_yz", "elec_spec", "posi_spec",
-			"dummy"};
-  const G4String id2[] = { "dummy", "space_gamma", "angle_gamma",
-			"space_electron", "angle_electron",
-			"space_positron", "angle_positron", "dummy" 
+  const G4int kMaxH1 = 14;
+  const G4int kMaxH2 = 13;
+  const G4String id1[] = {"dummy", 
+                        "edep",        // 1
+                        "gspec",       // 2  Gamma irradiance flux density at the virtual detector MeV/cm^2
+                        "ang_yz",      // 3
+			"elec_spec",   // 4
+			"posi_spec",   // 5
+                        "Source_spec", // 6
+                        "c_posi_spec", // 7  Positron Spectra at the collimator
+                        "m_posi_spec", // 8  Positron Spectra at the magnetospectrometer 
+                        "pri_espec",   // 9  Spectra of primary electron just behind the target
+                        "eBrem",       // 10 Gamma by Bremsstlahlung at the collimator
+                        "SynRad",      // 11 Synchrotron rad at the collimator
+                        "emittance",   // 12 Electron Emittance at the collimator
+                        "dummy"};
+  const G4String id2[] = { "dummy", 
+// At the virtual detector located at the exit of Collimator
+                        "c_space_gamma", 
+                        "c_angle_gamma",
+			"c_space_electron", 
+                        "c_angle_electron",
+			"c_space_positron", 
+                        "c_angle_positron", 
+// At the virtual detector located at the magnetospectrometer
+                        "m_space_gamma", 
+                        "m_angle_gamma",
+			"m_space_electron", 
+                        "m_angle_electron",
+			"m_space_positron", 
+                        "m_angle_positron", 
+                        "dummy" 
 			};
   const G4String title1[] = {"dummy",
-                            "Edep in target [MeV]",        //1
-                            "Energy spectrum at detector", //2
+                            "Edep in target [MeV/cm^2]",        //1
+                            "Gamma's energy at the collimator [Energy(arb.)/MeV]", //2
                             "YZ direction",                //3
                             "Electron spectra",              //4
                             "Positron spectra",              //5 
+		            "Source spectra",              //6
+		            "Collimator positron spectra",              //7
+		            "Magnetospectrometer spectra",              //8
+			    "Primary electron spectra",     //9
+                            "Bremsstrahlung gamma's energy at the collimator [Energy(arb.)/MeV]",    //10
+                            "SynchrotronRad gamma's energy at the collimator [Energy(arb.)/MeV]",    //11
+                            "Emittance per energy at the collimator [Emittance(mm-mrad) within pm 5% Energy range]",    //12
                             "dummy"};                       //
   const G4String title2[] = {
                             "dummy", 
-                            "Spatial 2D dist of Gamma-rays", //1 2D
-                            "Angular 2D dist of Gamma-rays", //2 2D
-                            "Spatial 2D dist of electrons",  //3 2D
-                            "Angular 2D dist of electrons",  //4 2D
-                            "Spatial 2D dist of positrons",  //5 2D
-                            "Angular 2D dist of positrons",  //6 2D
+// At the virtual detector located at the exit of Collimator
+                            "Spatial 2D dist of Gamma-rays at the collimator", //1 2D
+                            "Angular 2D dist of Gamma-rays at the collimator", //2 2D
+                            "Spatial 2D dist of electrons at the collimator",  //3 2D
+                            "Angular 2D dist of electrons at the collimator",  //4 2D
+                            "Spatial 2D dist of positrons at the collimator",  //5 2D
+                            "Angular 2D dist of positrons at the collimator",  //6 2D
+// At the virtual detector located at the magnetospectrometer
+                            "Spatial 2D dist of Gamma-rays at the magnetospectrometer", //7 2D
+                            "Angular 2D dist of Gamma-rays at the magnetospectrometer", //8 2D
+                            "Spatial 2D dist of electrons at the magnetospectrometer",  //9 2D
+                            "Angular 2D dist of electrons at the magnetospectrometer",  //10 2D
+                            "Spatial 2D dist of positrons at the magnetospectrometer",  //11 2D
+                            "Angular 2D dist of positrons at the magnetospectrometer",  //12 2D
+// At the virtual detector located at the exit of Collimator
+                            "Spatial 2D dist of gammas at the collimator",  //13 2D
                             "dummy" 
 			};            
   // Default values (to be reset via /analysis/h1/set command)
@@ -113,6 +155,15 @@ void AnalysisManager::Book()
   csvAnalysisManager->FinishNtuple();
 
   csvAnalysisManager->CreateNtuple("03", "Positrons Output for QuickPIC");
+  csvAnalysisManager->CreateNtupleDColumn("X [m]");
+  csvAnalysisManager->CreateNtupleDColumn("Y [m]");
+  csvAnalysisManager->CreateNtupleDColumn("px/pz");
+  csvAnalysisManager->CreateNtupleDColumn("py/pz");
+  csvAnalysisManager->CreateNtupleDColumn("CT-Z[m]");
+  csvAnalysisManager->CreateNtupleDColumn("Gamma (Energy)");
+  csvAnalysisManager->FinishNtuple();
+
+  csvAnalysisManager->CreateNtuple("04", "Primary Electrons Output for QuickPIC");
   csvAnalysisManager->CreateNtupleDColumn("X [m]");
   csvAnalysisManager->CreateNtupleDColumn("Y [m]");
   csvAnalysisManager->CreateNtupleDColumn("px/pz");

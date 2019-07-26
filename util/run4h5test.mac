@@ -1,4 +1,4 @@
-/run/numberOfThreads 1
+/run/numberOfThreads 12
 
 /control/verbose 1
 #/control/cout/useBuffer
@@ -44,7 +44,7 @@
 /analysis/h1/setYaxis 1 "Number of particles"
 /analysis/h1/setAscii 1
 
-/analysis/h1/set 2    1000  0.0   8.0  MeV #Gamma spectra at detector [MeV]
+/analysis/h1/set 2    2000  0.0   10000.0  MeV #Gamma spectra at detector [MeV]
 /analysis/h1/setXaxis 2 "Energy [MeV]"
 /analysis/h1/setYaxis 2 "Number of particles"
 /analysis/h1/setAscii 2
@@ -54,17 +54,38 @@
 /analysis/h1/setYaxis 3 "Number of particles"
 /analysis/h1/setAscii 3
 
-/analysis/h1/set 4    4000  0.0   10000.0  MeV #Electron spectra [MeV]
+/analysis/h1/set 4    2000  0.0   10000.0  MeV #Electron spectra [MeV]
 /analysis/h1/setXaxis 4 "Energy [MeV]"
 /analysis/h1/setYaxis 4 "Number of electrons"
 /analysis/h1/setAscii 4
 
-/analysis/h1/set 5    4000  0.0   10000.0  MeV #Positron spectra [MeV]
+/analysis/h1/set 5    2000  0.0   10000.0  MeV #Positron spectra [MeV]
 /analysis/h1/setXaxis 5 "Energy [MeV]"
 /analysis/h1/setYaxis 5 "Number of positrons"
 /analysis/h1/setAscii 5
 
+/analysis/h1/set 6    2000  0.0   10000.0  MeV #Source spectra [MeV]
+/analysis/h1/setXaxis 6 "Energy [MeV]"
+/analysis/h1/setYaxis 6 "Number of initial particles"
+/analysis/h1/setAscii 6
 
+/analysis/h1/set 7    2000  0.0   10000.0  MeV #Collimator spectra [MeV]
+/analysis/h1/setXaxis 7 "Energy [MeV]"
+/analysis/h1/setYaxis 7 "Number of initial particles"
+/analysis/h1/setAscii 7
+
+/analysis/h1/set 8    2000  0.0   10000.0  MeV #Magnetospectrometer spectra [MeV]
+/analysis/h1/setXaxis 8 "Energy [MeV]"
+/analysis/h1/setYaxis 8 "Number of initial particles"
+/analysis/h1/setAscii 8
+
+/analysis/h1/set 9    2000  0.0   10000.0  MeV #Primary Electron spectra [MeV]
+/analysis/h1/setXaxis 9 "Energy [MeV]"
+/analysis/h1/setYaxis 9 "Number of electrons"
+/analysis/h1/setAscii 9
+
+
+#  2D Histograms at the end of the collimator
 /analysis/h2/set 1    100  -.01   .01    m  none  linear 100 -.01   .01   m  none linear #Source spectra [MeV]
 /analysis/h2/setXaxis 1 "Position X [m]"
 /analysis/h2/setYaxis 1 "Position Y [m]"
@@ -74,25 +95,56 @@
 /analysis/h2/setXaxis 2 "Theta_X [rad]"
 /analysis/h2/setYaxis 2 "Theta_Y [rad]"
 
-/analysis/h2/set 3    100  .0   .35    m  none  linear 100 -.1   .1   m  none linear #Source spectra [MeV]
+/analysis/h2/set 3    100  -.01   .01    m  none  linear 100 -.01   .01   m  none linear #Source spectra [MeV]
 /analysis/h2/setXaxis 3 "Position X [m]"
 /analysis/h2/setYaxis 3 "Position Y [m]"
 # /analysis/h2/setAscii 1 true
 
-/analysis/h2/set 4    100  .00   .52  rad  none  linear 100 -.01   .01  rad  none linear #Source spectra [MeV]
+/analysis/h2/set 4    100  -.01   .01  rad  none  linear 100 -.01   .01  rad  none linear #Source spectra [MeV]
 /analysis/h2/setXaxis 4 "Theta_X [rad]"
 /analysis/h2/setYaxis 4 "Theta_Y [rad]"
 
-/analysis/h2/set 5    100  -.35  -.0    m  none  linear 100 -.1   .1   m  none linear #Source spectra [MeV]
+/analysis/h2/set 5    100  -.01  .01    m  none  linear 100 -.01   .01   m  none linear #Source spectra [MeV]
 # /analysis/h2/set 5    100  -.01   .01    m  none  linear 100  -.01   .01   m  none linear #Source spectra [MeV]
 /analysis/h2/setXaxis 5 "Position X [m]"
 /analysis/h2/setYaxis 5 "Position Y [m]"
 # /analysis/h2/setAscii 1 true
 
-/analysis/h2/set 6    100  -.52   -.0  rad  none  linear 100 -.01   .01  rad  none linear #Source spectra [MeV]
+/analysis/h2/set 6    100  -.01   .01  rad  none  linear 100  -.01   .01  rad  none linear #Source spectra [MeV]
 /analysis/h2/setXaxis 6 "Theta_X [rad]"
 /analysis/h2/setYaxis 6 "Theta_Y [rad]"
 
+#  2D Histograms at the magnetospectrometer
+/analysis/h2/set 7    100  -.01   .01    m  none  linear 100 -.01   .01   m  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 7 "Position X [m]"
+/analysis/h2/setYaxis 7 "Position Y [m]"
+# /analysis/h2/setAscii 1 true
+
+/analysis/h2/set 8    100  -.01   .01  rad  none  linear 100 -.01   .01  rad  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 8 "Theta_X [rad]"
+/analysis/h2/setYaxis 8 "Theta_Y [rad]"
+
+/analysis/h2/set 9    100  .0   .35    m  none  linear 100 -.1   .1   m  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 9 "Position X [m]"
+/analysis/h2/setYaxis 9 "Position Y [m]"
+# /analysis/h2/setAscii 1 true
+
+/analysis/h2/set 10    100  .00   .52  rad  none  linear 100 -.01   .01  rad  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 10 "Theta_X [rad]"
+/analysis/h2/setYaxis 10 "Theta_Y [rad]"
+
+/analysis/h2/set 11   100  -.35  -.0    m  none  linear 100 -.1   .1   m  none linear #Source spectra [MeV]
+# /analysis/h2/set 5    100  -.01   .01    m  none  linear 100  -.01   .01   m  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 11 "Position X [m]"
+/analysis/h2/setYaxis 11 "Position Y [m]"
+# /analysis/h2/setAscii 1 true
+
+/analysis/h2/set 12    100  -.52   -.0  rad  none  linear 100 -.01   .01  rad  none linear #Source spectra [MeV]
+/analysis/h2/setXaxis 12 "Theta_X [rad]"
+/analysis/h2/setYaxis 12 "Theta_Y [rad]"
+
+
+
 
 /run/printProgress 300000
-/run/beamOn 300000
+/run/beamOn 10000000

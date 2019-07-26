@@ -42,8 +42,8 @@
 #include "G4VModularPhysicsList.hh"
 #include "globals.hh"
 
-class StepMax;
 class PhysicsListMessenger;
+class StepMax;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -59,13 +59,17 @@ class PhysicsList: public G4VModularPhysicsList
     virtual void ConstructProcess();
 
     void AddDecay();    
-    void AddStepMax();       
+
+    void SetStepMax(G4double);
     StepMax* GetStepMaxProcess() {return fStepMaxProcess;};
+    void AddStepMax();       
 
   private:       
     G4String                      fEmName;
     G4VPhysicsConstructor*        fEmPhysicsList;    
-    static G4ThreadLocal StepMax* fStepMaxProcess;
+
+    G4double fMaxChargedStep; // Refer to Example F04
+    StepMax* fStepMaxProcess;
     
     PhysicsListMessenger*  fMessenger;
 };

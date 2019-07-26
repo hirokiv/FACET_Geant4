@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 import struct
 #from scipy.io import FortranFile
 import numpy as np
+import sys
 #import pandas as pd
 
+args = ''.join(sys.argv[1:])
 
 ##################################################
 # FLAGS
@@ -22,7 +24,8 @@ plt.rcParams["font.size"] = 16
 # Limiting the particles counted to be less than 0.1 rad
 
 # for specy_str in {"positron","elec_prm","elec_sec","photon"}:
-for specy_str in ["beam_electron", "beam_positron"]:
+for specy_str in {args}:
+#for specy_str in ["beam_electron", "beam_positron"]:
   
   ##############################################
   # File ID

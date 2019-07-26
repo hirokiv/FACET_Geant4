@@ -4,8 +4,13 @@
 
 ParticleH5FileReader::ParticleH5FileReader()    
 {
+}
+
+
+void ParticleH5FileReader::StoreFiles()    
+{
   G4int verbose = 1;
-  std::string filename = "/DataStorage/QUICKPIC_OUTPUT/G07/RAW-BEAM-04_1200.h5";
+  std::string filename = "/DataStorage/QUICKPIC_OUTPUT/G07/RAW-BEAM-04_1640.h5";
   density = 4.5*1e16; // x 10^16 [cm-3] 
   step = 12000; // steps On QuickPIC. should be the same as the file number x dT
 
@@ -15,28 +20,12 @@ ParticleH5FileReader::ParticleH5FileReader()
   G4cout << " center of the beam : " << z_center/cm  << G4endl;
   G4cout << " Normalized length : " << dx/cm  << G4endl;
 
-//  boost::multi_array<double,2>  x1_t = ParticleH5FileReader::READ_H5(filename, "x1", verbose ); // Length in normalized unit
-//  boost::multi_array<double,2>  x2_t = ParticleH5FileReader::READ_H5(filename, "x2", verbose );
-//  boost::multi_array<double,2>  x3_t = ParticleH5FileReader::READ_H5(filename, "x3", verbose ); // Actually shows zeta = ct-z
-//  boost::multi_array<double,2>  p1_t = ParticleH5FileReader::READ_H5(filename, "p1", verbose );
-//  boost::multi_array<double,2>  p2_t = ParticleH5FileReader::READ_H5(filename, "p2", verbose );
-//  boost::multi_array<double,2>  p3_t = ParticleH5FileReader::READ_H5(filename, "p3", verbose );
-//  G4int NN = 300000; // x1_t.size();
-//    for (int i = 0; i<NN; ++i){
-//      p1[i] = (G4double)p1_t[i][0];
-//      p2[i] = (G4double)p2_t[i][0];
-//      p3[i] = (G4double)p3_t[i][0];
-//      x1[i] = (G4double)x1_t[i][0];
-//      x2[i] = (G4double)x2_t[i][0];
-//      x3[i] = (G4double)x3_t[i][0];
-//    }
-    ParticleH5FileReader::READ_H5(x1, filename, "x1", verbose ); // Length in normalized unit
-    ParticleH5FileReader::READ_H5(x2, filename, "x2", verbose );
-    ParticleH5FileReader::READ_H5(x3, filename, "x3", verbose ); // Actually shows zeta = ct-z
-    ParticleH5FileReader::READ_H5(p1, filename, "p1", verbose );
-    ParticleH5FileReader::READ_H5(p2, filename, "p2", verbose );
-    ParticleH5FileReader::READ_H5(p3, filename, "p3", verbose );
-
+  ParticleH5FileReader::READ_H5(x1, filename, "x1", verbose ); // Length in normalized unit
+  ParticleH5FileReader::READ_H5(x2, filename, "x2", verbose );
+  ParticleH5FileReader::READ_H5(x3, filename, "x3", verbose ); // Actually shows zeta = ct-z
+  ParticleH5FileReader::READ_H5(p1, filename, "p1", verbose );
+  ParticleH5FileReader::READ_H5(p2, filename, "p2", verbose );
+  ParticleH5FileReader::READ_H5(p3, filename, "p3", verbose );
 }
 
 ParticleH5FileReader::~ParticleH5FileReader()
@@ -81,8 +70,10 @@ boost::multi_array<double,2> ParticleH5FileReader::READ_H5(G4double *out, std::s
         	}
         }
 
-        for (int i = 0; i<NN; ++i){
-          out[i] = (G4double)data[i][0];
+        G4double dN = (G4double)NX/(G4double)NN;
+        for (G4int i = 0; i<NN; ++i){
+	  G4int idx = (G4int) round(dN*(G4double)i) ;
+          out[i] = (G4double)data[idx][0];
         }
 
         return data;
@@ -105,6 +96,7 @@ G4double ParticleH5FileReader::GetX3()
 { 
  return x3[count] * dx + z_center;
 }
+
 G4double ParticleH5FileReader::GetP1() 
 {
  return p1[count]; 
@@ -117,6 +109,7 @@ G4double ParticleH5FileReader::GetP3()
 {
  return p3[count]; 
 }
+
 G4int ParticleH5FileReader::GetCount() 
 {
  return (G4int)count; 

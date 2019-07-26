@@ -66,7 +66,9 @@
 #include "G4ShortLivedConstructor.hh"
 #include "G4DNAGenericIonsManager.hh"
 
-G4ThreadLocal StepMax* PhysicsList::fStepMaxProcess = nullptr;
+#include "StepMax.hh"
+
+// G4ThreadLocal StepMax* PhysicsList::fStepMaxProcess = nullptr;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -84,6 +86,9 @@ PhysicsList::PhysicsList() : G4VModularPhysicsList()
   G4EmParameters::Instance()->SetBuildCSDARange(true);
 
   SetDefaultCutValue(1.*mm);
+
+  // Max step size for charged particles
+  fStepMaxProcess = new StepMax();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -282,13 +287,10 @@ void PhysicsList::AddDecay()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#include "StepMax.hh"
 
 void PhysicsList::AddStepMax()
 {
   // Step limitation seen as a process
-  fStepMaxProcess = new StepMax();
-
   auto particleIterator=GetParticleIterator();
   particleIterator->reset();
   while ((*particleIterator)()){
@@ -302,4 +304,12 @@ void PhysicsList::AddStepMax()
   }
 }
 
+void PhysicsList::SetStepMax( G4double step )
+{  
+  fMaxChargedStep = step;
+  fStepMaxProcess->SetStepMax(fMaxChargedStep);
+  G4cout << "  StepMax value modified" << G4endl;
+}
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
