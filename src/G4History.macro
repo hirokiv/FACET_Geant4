@@ -1,0 +1,5 @@
+/run/verbose 2
+/control/execute vis.mac
+/vis/open OGLSQt 600x600-0+0
+/vis/sceneHandler/create OGLSQt
+/vis/viewer/create ! ! 600x600-0+0
