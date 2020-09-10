@@ -27,8 +27,8 @@ void AnalysisManager::Book()
   rootAnalysisManager1->SetActivation(true);
 
 
-  const G4int kMaxH1 = 14;
-  const G4int kMaxH2 = 13;
+  const G4int kMaxH1 = 18;
+  const G4int kMaxH2 = 15;
   const G4String id1[] = {"dummy", 
                         "edep",        // 1
                         "gspec",       // 2  Gamma irradiance flux density at the virtual detector MeV/cm^2
@@ -42,22 +42,30 @@ void AnalysisManager::Book()
                         "eBrem",       // 10 Gamma by Bremsstlahlung at the collimator
                         "SynRad",      // 11 Synchrotron rad at the collimator
                         "emittance",   // 12 Electron Emittance at the collimator
+			"mu-_spec",   // 13
+			"mu+_spec",   // 14
+			"pi-_spec",   // 15
+			"pi+_spec",   // 16
                         "dummy"};
   const G4String id2[] = { "dummy", 
 // At the virtual detector located at the exit of Collimator
-                        "c_space_gamma", 
-                        "c_angle_gamma",
-			"c_space_electron", 
-                        "c_angle_electron",
-			"c_space_positron", 
-                        "c_angle_positron", 
+                        "c_space_gamma", // 1 
+                        "c_angle_gamma", // 2 
+			"c_space_electron", // 3 
+                        "c_angle_electron", // 4
+			"c_space_positron",  // 5
+                        "c_angle_positron",  // 6
 // At the virtual detector located at the magnetospectrometer
-                        "m_space_gamma", 
-                        "m_angle_gamma",
-			"m_space_electron", 
-                        "m_angle_electron",
-			"m_space_positron", 
-                        "m_angle_positron", 
+                        "m_space_gamma",  // 7
+                        "m_angle_gamma", // 8
+			"m_space_electron",  // 9
+                        "m_angle_electron", // 10 
+			"m_space_positron", // 11
+                        "m_angle_positron", // 12
+// before and after the target. Calculate only for the Emax pm 5 percent
+			"v_xpx_b", // 13 // before target
+			"v_xpx_a", // 14 // after target
+// Dummy
                         "dummy" 
 			};
   const G4String title1[] = {"dummy",
@@ -73,6 +81,10 @@ void AnalysisManager::Book()
                             "Bremsstrahlung gamma's energy at the collimator [Energy(arb.)/MeV]",    //10
                             "SynchrotronRad gamma's energy at the collimator [Energy(arb.)/MeV]",    //11
                             "Emittance per energy at the collimator [Emittance(mm-mrad) within pm 5% Energy range]",    //12
+                            "Muon- spectra",    //13
+                            "Muon+ spectra",    //14
+                            "Pion- spectra",    //15
+                            "Pion+ spectra",    //16
                             "dummy"};                       //
   const G4String title2[] = {
                             "dummy", 
@@ -91,7 +103,10 @@ void AnalysisManager::Book()
                             "Spatial 2D dist of positrons at the magnetospectrometer",  //11 2D
                             "Angular 2D dist of positrons at the magnetospectrometer",  //12 2D
 // At the virtual detector located at the exit of Collimator
-                            "Spatial 2D dist of gammas at the collimator",  //13 2D
+//                            "Spatial 2D dist of gammas at the collimator",  //13 2D
+// Phasespace distribution before and after the target
+                            "x-px dist of electrons before the target",  //13 2D
+                            "x-px dist of electrons after the target",  //14 2D
                             "dummy" 
 			};            
   // Default values (to be reset via /analysis/h1/set command)
@@ -171,9 +186,17 @@ void AnalysisManager::Book()
   csvAnalysisManager->CreateNtupleDColumn("CT-Z[m]");
   csvAnalysisManager->CreateNtupleDColumn("Gamma (Energy)");
   csvAnalysisManager->FinishNtuple();
+
+  csvAnalysisManager->CreateNtuple("05", "Beam properties per each Energy bin");
+  csvAnalysisManager->CreateNtupleDColumn("Energy [MeV]");
+  csvAnalysisManager->CreateNtupleDColumn("# of sampled particles");
+  csvAnalysisManager->CreateNtupleDColumn("Sigma_x [um]");
+  csvAnalysisManager->CreateNtupleDColumn("Sigma_vx [urad]");
+  csvAnalysisManager->CreateNtupleDColumn("Epsilon_N [mm-mrad]");
+  csvAnalysisManager->FinishNtuple();
+
+
 }
-
-
 void AnalysisManager::PrintStatistic()
 {
 }

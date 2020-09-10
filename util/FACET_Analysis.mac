@@ -1,11 +1,12 @@
 # Set analysis axis
 /analysis/setFileName proba2
-/analysis/h1/set 1    200  0.0   50  keV #Edep in target [MeV]
+
+/analysis/h1/set 1    1000  0.0   50  keV #Edep in target [MeV]
 /analysis/h1/setXaxis 1 "Energy [MeV]"
 /analysis/h1/setYaxis 1 "Number of particles"
 /analysis/h1/setAscii 1
 
-/analysis/h1/set 2    200  0.0   1000.0  MeV #Gamma spectra at detector [MeV]
+/analysis/h1/set 2    1000  0.0   1000.0  MeV #Gamma spectra at detector [MeV]
 /analysis/h1/setXaxis 2 "Energy [MeV]"
 /analysis/h1/setYaxis 2 "Gammas at the Detector [Energy(arb.)/MeV]"
 /analysis/h1/setAscii 2
@@ -15,45 +16,66 @@
 /analysis/h1/setYaxis 3 "Number of particles"
 /analysis/h1/setAscii 3
 
-/analysis/h1/set 4    200  0.0   10000.0  MeV #Electron spectra [MeV]
+/analysis/h1/set 4    1000  0.0   11000.0  MeV #Electron spectra [MeV]
 /analysis/h1/setXaxis 4 "Energy [MeV]"
 /analysis/h1/setYaxis 4 "Number of electrons"
 /analysis/h1/setAscii 4
 
-/analysis/h1/set 5    200  0.0   10000.0  MeV #Positron spectra [MeV]
+/analysis/h1/set 5    1000  0.0   11000.0  MeV #Positron spectra [MeV]
 /analysis/h1/setXaxis 5 "Energy [MeV]"
 /analysis/h1/setYaxis 5 "Number of positrons"
 /analysis/h1/setAscii 5
 
-/analysis/h1/set 6    200  0.0   10000.0  MeV #Source spectra [MeV]
+/analysis/h1/set 6    1000  0.0   11000.0  MeV #Source spectra [MeV]
 /analysis/h1/setXaxis 6 "Energy [MeV]"
 /analysis/h1/setYaxis 6 "Number of initial particles"
 /analysis/h1/setAscii 6
 
-/analysis/h1/set 7    200  0.0   10000.0  MeV #Collimator spectra [MeV]
+/analysis/h1/set 7    1000  0.0   11000.0  MeV #Collimator spectra [MeV]
 /analysis/h1/setXaxis 7 "Energy [MeV]"
 /analysis/h1/setYaxis 7 "Number of initial particles"
 /analysis/h1/setAscii 7
 
-/analysis/h1/set 8    200  0.0   10000.0  MeV #Magnetospectrometer spectra [MeV]
+/analysis/h1/set 8    1000  0.0   11000.0  MeV #Magnetospectrometer spectra [MeV]
 /analysis/h1/setXaxis 8 "Energy [MeV]"
 /analysis/h1/setYaxis 8 "Number of initial particles"
 /analysis/h1/setAscii 8
 
-/analysis/h1/set 9    200  0.0   10000.0  MeV #Primary Electron spectra [MeV]
+/analysis/h1/set 9    1000  0.0   11000.0  MeV #Primary Electron spectra [MeV]
 /analysis/h1/setXaxis 9 "Energy [MeV]"
 /analysis/h1/setYaxis 9 "Number of electrons"
 /analysis/h1/setAscii 9
 
-/analysis/h1/set 10    200  0.0   1000.0  MeV # Bremsstrahlung [MeV]
+/analysis/h1/set 10    1000  0.0   1000.0  MeV # Bremsstrahlung [MeV]
 /analysis/h1/setXaxis 10 "Energy [MeV]"
 /analysis/h1/setYaxis 10 "Gamma spectral flux by Bremsstrahlung [Energy(arb.)/MeV]"
 /analysis/h1/setAscii 10
 
-/analysis/h1/set 11    200  0.0   1000.0  MeV # Synchrotron Radiation [MeV]
+/analysis/h1/set 11    1000  0.0   1000.0  MeV # Synchrotron Radiation [MeV]
 /analysis/h1/setXaxis 11 "Energy [MeV]"
 /analysis/h1/setYaxis 11 "Gamma spectral flux by Synchrotron Radiation [Energy(arb.)/MeV]"
 /analysis/h1/setAscii 11
+
+# muon - 
+/analysis/h1/set 13    1000  0.0   11000.0  MeV # 
+/analysis/h1/setXaxis 13 "Energy [MeV]"
+/analysis/h1/setYaxis 13 "Number of mu-"
+/analysis/h1/setAscii 13
+# muon +
+/analysis/h1/set 14    1000  0.0   11000.0  MeV # 
+/analysis/h1/setXaxis 14 "Energy [MeV]"
+/analysis/h1/setYaxis 14 "Number of mu+"
+/analysis/h1/setAscii 14
+# pion - 
+/analysis/h1/set 15    1000  0.0   11000.0  MeV #
+/analysis/h1/setXaxis 13 "Energy [MeV]"
+/analysis/h1/setYaxis 13 "Number of pi-"
+/analysis/h1/setAscii 13
+# pion +
+/analysis/h1/set 16    1000  0.0   11000.0  MeV # 
+/analysis/h1/setXaxis 14 "Energy [MeV]"
+/analysis/h1/setYaxis 14 "Number of pi+"
+/analysis/h1/setAscii 14
 
 
 
@@ -114,3 +136,13 @@
 /analysis/h2/set 12    100  -1.   -.0  rad  none  linear 100 -.01   .01  rad  none linear #Source spectra [MeV]
 /analysis/h2/setXaxis 12 "Theta_X [rad]"
 /analysis/h2/setYaxis 12 "Theta_Y [rad]"
+
+/analysis/h2/set 13    200  -50.   50.    um  none  linear 200 -.002   .002   rad  none linear # phase space dist before the target [m -rad]
+/analysis/h2/setXaxis 13 "Position X [um]"
+/analysis/h2/setYaxis 13 "Velocity X [rad]"
+
+/analysis/h2/set 14    200  -50.   50.    um  none  linear 200 -.002   .002   rad  none linear # phase space dist before the target [m -rad]
+/analysis/h2/setXaxis 14 "Position X [um]"
+/analysis/h2/setYaxis 14 "Velocity X [rad]"
+
+

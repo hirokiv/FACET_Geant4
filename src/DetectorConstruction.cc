@@ -32,7 +32,7 @@
 
 DetectorConstruction::DetectorConstruction()
   :G4VUserDetectorConstruction(), fCheckOverlaps(true), fWorldVolume(nullptr),
-   fTargetLogicalVolume(nullptr), fDetectorLogicalVolume(nullptr), fVirtualLogicalVolume(nullptr), fTargetThickness(1*mm), fAmp(0.0*tesla), fLambda(1.*cm), fInstability(false), fStepLimit(nullptr), fnReplicas_z(1)
+   fTargetLogicalVolume(nullptr), fDetectorLogicalVolume(nullptr), fVirtualLogicalVolume(nullptr), fTargetThickness(0*mm), fAmp(0.0*tesla), fLambda(1.*cm), fInstability(false), fStepLimit(nullptr), fnReplicas_z(1)
 {
   G4cout << "DetectorConstruction Constructor" << G4endl;
 
@@ -63,7 +63,7 @@ DetectorConstruction::~DetectorConstruction() {
 
 G4VPhysicalVolume* DetectorConstruction::Construct() {
 //  G4double const Tesla = volt*second/meter2; // Define tesla
-  G4bool DipoleField = 1;
+  G4bool DipoleField = 0;
 
   // ==========================================================================
   //The world

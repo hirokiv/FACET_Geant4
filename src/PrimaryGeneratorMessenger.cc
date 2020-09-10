@@ -92,6 +92,11 @@ PrimaryGeneratorMessenger::
   fSetEmittanceCmd->SetParameterName("emitt",true);
   fSetEmittanceCmd->SetDefaultValue(20.0);
 //  fSetEmittanceCmd->SetDefaultUnit("um");
+//
+  fSetParticleCmd = new G4UIcmdWithAString("/primary/particle",this);
+  fSetParticleCmd->SetGuidance(" Set particle.");
+  fSetParticleCmd->SetParameterName("specy",true);
+  fSetParticleCmd->SetDefaultValue("e-");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -105,6 +110,7 @@ PrimaryGeneratorMessenger::~PrimaryGeneratorMessenger()
   delete fSetMomentumCmd;
   delete fSetSigrCmd;
   delete fSetSigzCmd;
+  delete fSetParticleCmd;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -128,4 +134,10 @@ void PrimaryGeneratorMessenger::
    { fAction->SetSigz(fSetSigzCmd->GetNewDoubleValue(newValue));}
   if( command == fSetEmittanceCmd)
    { fAction->SetEmittance(fSetEmittanceCmd->GetNewDoubleValue(newValue));}
+  if( command == fSetParticleCmd)
+  // { fAction->SetParticle(fSetParticleCmd->SetParameterName(newValue));}
+    {
+     fAction->SetParticle(newValue);      
+    }
+
 }

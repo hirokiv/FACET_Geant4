@@ -54,8 +54,23 @@
 #include "G4LossTableManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4ProcessTable.hh"
+
 
 // particles
+#include "G4Gamma.hh"
+#include "G4Electron.hh"
+#include "G4Positron.hh"
+
+#include "G4MuonPlus.hh"
+#include "G4MuonMinus.hh"
+#include "G4PionMinus.hh"
+#include "G4PionPlus.hh"
+
+#include "G4GammaConversionToMuons.hh"
+
+#include "G4AnnihiToMuPair.hh"
+#include "G4eeToHadrons.hh"
 
 #include "G4BosonConstructor.hh"
 #include "G4LeptonConstructor.hh"
@@ -66,6 +81,8 @@
 #include "G4ShortLivedConstructor.hh"
 #include "G4DNAGenericIonsManager.hh"
 
+#include "G4PhysListFactory.hh"
+
 #include "StepMax.hh"
 
 // G4ThreadLocal StepMax* PhysicsList::fStepMaxProcess = nullptr;
@@ -74,21 +91,23 @@
 
 PhysicsList::PhysicsList() : G4VModularPhysicsList()
 {
-  fMessenger = new PhysicsListMessenger(this);
 
-  SetVerboseLevel(1);
-
-  // EM physics
-  fEmPhysicsList = new PhysListEmStandard(fEmName = "local");
-
-  // Em options
-  //
-  G4EmParameters::Instance()->SetBuildCSDARange(true);
-
-  SetDefaultCutValue(1.*mm);
-
-  // Max step size for charged particles
-  fStepMaxProcess = new StepMax();
+      fMessenger = new PhysicsListMessenger(this);
+    
+      SetVerboseLevel(1);
+    
+      // EM physics
+    //  fEmPhysicsList = new PhysListEmStandard(fEmName = "local");
+      fEmPhysicsList = new PhysListEmStandard(fEmName = "emstandard_opt0");
+    
+      // Em options
+      //
+      G4EmParameters::Instance()->SetBuildCSDARange(true);
+    
+      SetDefaultCutValue(1.*mm);
+    
+      // Max step size for charged particles
+      fStepMaxProcess = new StepMax();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -151,6 +170,8 @@ void PhysicsList::ConstructProcess()
   // step limitation (as a full process)
   //  
   AddStepMax();
+
+  ConstructHighEnergy();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -312,4 +333,61 @@ void PhysicsList::SetStepMax( G4double step )
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PhysicsList::ConstructHighEnergy()
+{
+  const G4ParticleDefinition* particle = G4Gamma::Gamma();
+  G4ProcessManager* pmanager = particle->GetProcessManager();
+
+  pmanager->AddDiscreteProcess(new G4GammaConversionToMuons);
+
+  particle = G4Positron::Positron();
+  pmanager = particle->GetProcessManager();
+
+  pmanager->AddDiscreteProcess(new G4AnnihiToMuPair);
+//  pmanager->AddDiscreteProcess(new G4eeToHadrons);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PhysicsList::SetGammaToMuPairFac(G4double fac)
+{
+  G4ProcessTable* theProcessTable = G4ProcessTable::GetProcessTable();
+  G4GammaConversionToMuons* gammaToMuPairProcess = (G4GammaConversionToMuons*)
+                       theProcessTable->FindProcess("GammaToMuPair","gamma");
+  if(gammaToMuPairProcess) gammaToMuPairProcess->SetCrossSecFactor(fac);
+  else G4cout
+   << "Warning. No process GammaToMuPair found, SetGammaToMuPairFac was ignored"
+   << G4endl;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PhysicsList::SetAnnihiToMuPairFac(G4double fac)
+{
+  G4ProcessTable* theProcessTable = G4ProcessTable::GetProcessTable();
+  G4AnnihiToMuPair* annihiToMuPairProcess = (G4AnnihiToMuPair*)
+                         theProcessTable->FindProcess("AnnihiToMuPair","e+");
+  if(annihiToMuPairProcess) annihiToMuPairProcess->SetCrossSecFactor(fac);
+  else G4cout
+   << "Warning. No process AnnihiToMuPair found, SetAnnihiToMuPairFac ignored"
+   << G4endl;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PhysicsList::SetAnnihiToHadronFac(G4double fac)
+{
+  G4ProcessTable* theProcessTable = G4ProcessTable::GetProcessTable();
+  G4eeToHadrons* eehadProcess = (G4eeToHadrons*)
+                              theProcessTable->FindProcess("ee2hadr","e+");
+  if(eehadProcess) eehadProcess->SetCrossSecFactor(fac);
+  else G4cout
+    << "Warning. No process ee2hadr found, SetAnnihiToHadronFac was ignored"
+    << G4endl;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
 

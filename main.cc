@@ -8,6 +8,8 @@
 #include "ActionInitialization.hh"
 #include "PhysicsList.hh"
 
+#include "G4PhysListFactory.hh"
+
 int main(int argc, char *argv[])
 {
   //Chose the random engine
@@ -23,9 +25,18 @@ int main(int argc, char *argv[])
   G4cout << "DetectorConstruction.hh" << G4endl;
 
   //The PhisicsList
-  PhysicsList* physics = new PhysicsList();
-  runManager->SetUserInitialization(physics);
-  G4cout << "Physics" << G4endl;
+  G4bool USERDEFINED = 0;
+  if (USERDEFINED == 1)
+  {
+    PhysicsList* physics = new PhysicsList();
+    runManager->SetUserInitialization(physics);
+    G4cout << "Physics User defined" << G4endl;
+  } else {
+    G4PhysListFactory *physListFactory = new G4PhysListFactory();
+    G4VUserPhysicsList *physics = physListFactory->GetReferencePhysList("QGSP_BERT");
+    runManager->SetUserInitialization(physics);
+    G4cout << "Physics QGSP_BERT" << G4endl;
+  }
 
   //User action initialization classes
   runManager->SetUserInitialization(new ActionInitialization(detector));

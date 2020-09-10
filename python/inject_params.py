@@ -52,8 +52,8 @@ for specy_str in {args}:
   # Set bin for every NPB particles
   NPB = int(CNT/DNUM)+1
   
-  print "# of particles   :",CNT
-  print "medcnt/",DNUM,":",NPB
+  print( "# of particles   :",CNT)
+  print( "medcnt/",DNUM,":",NPB)
 
 
   ebin = np.zeros(CNT)
@@ -116,22 +116,22 @@ for specy_str in {args}:
 #   filename = specy_str + "_energy.png"
 #   fig5.savefig(filename,bbox_inches='tight')
 
-  print '========================='
-  print 'Average in X'
-  print ' mean   ' + str(np.average(rx)     )   
-  print ' sigma  ' + str(np.sqrt(np.var(rx))) 
-  print 'Average in Y'
-  print ' mean   ' + str(np.average(ry)     )
-  print ' sigma  ' + str(np.sqrt(np.var(ry))) 
-  print 'Average of U'
-  print ' mean   ' + str(np.average(ru)     )
-  print ' sigma  ' + str(np.sqrt(np.var(ru))) 
-  print 'Average of V'
-  print ' mean   ' + str(np.average(rv)     )
-  print ' sigma  ' + str(np.sqrt(np.var(rv))) 
-  print 'Average of CT-Z'
-  print ' mean   ' + str(np.average(rz)     )
-  print ' sigma  ' + str(np.sqrt(np.var(rz))) 
-  print '========================='
+  print( '=========================')
+  print( 'Average in X')
+  print( ' mean   ' + str(np.average(rx)     )   )
+  print( ' sigma  ' + str(np.sqrt(np.var(rx))) )
+  print( 'Average in Y')
+  print( ' mean   ' + str(np.average(ry)     ))
+  print( ' sigma  ' + str(np.sqrt(np.var(ry))) )
+  print( 'Average of U')
+  print( ' mean   ' + str(np.average(ru)     ))
+  print( ' sigma  ' + str(np.sqrt(np.var(ru)))) 
+  print( 'Average of V')
+  print( ' mean   ' + str(np.average(rv)     ))
+  print( ' sigma  ' + str(np.sqrt(np.var(rv)))) 
+  print( 'Average of CT-Z')
+  print( ' mean   ' + str(np.average(rz)     ))
+  print( ' sigma  ' + str(np.sqrt(np.var(rz)))) 
+  print( '========================='          )
 
 

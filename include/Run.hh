@@ -36,7 +36,8 @@ private:
   std::vector<G4double> xx2;          // um
   std::vector<G4double> vx2;        // rad
   std::vector<G4double> xvx; // mm-mrad
-  std::vector<G4double> E_count; // Number of electrons used for the calculation
+  std::vector<G4int> E_count; // Number of electrons used for the calculation
+  std::vector<G4double> E_sum; // Number of electrons used for the calculation
 
   G4RootAnalysisManager* rootAnalysisManager1;
   G4RootAnalysisManager* rootAnalysisManager2;

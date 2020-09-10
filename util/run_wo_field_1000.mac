@@ -145,4 +145,4 @@
 #  /analysis/h2/setYaxis 12 "Theta_Y [rad]"
 #  
 /run/printProgress 10000
-/run/beamOn 1000000
+/run/beamOn 100000

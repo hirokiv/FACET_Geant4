@@ -18,4 +18,4 @@
 #//  /gun/position 0. 0. -50. um
 #//  /gun/direction 0. 0. 1.
 /run/printProgress 1000
-/run/beamOn 1000000
+/run/beamOn 10000

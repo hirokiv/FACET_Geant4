@@ -44,6 +44,9 @@
 
 class PhysicsListMessenger;
 class StepMax;
+class G4GammaConversionToMuons;
+class G4AnnihiToMuPair;
+class G4eeToHadrons;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -63,6 +66,12 @@ class PhysicsList: public G4VModularPhysicsList
     void SetStepMax(G4double);
     StepMax* GetStepMaxProcess() {return fStepMaxProcess;};
     void AddStepMax();       
+
+    void ConstructHighEnergy();
+    // Construct processes and register them
+    void SetGammaToMuPairFac(G4double);
+    void SetAnnihiToMuPairFac(G4double);
+    void SetAnnihiToHadronFac(G4double);
 
   private:       
     G4String                      fEmName;

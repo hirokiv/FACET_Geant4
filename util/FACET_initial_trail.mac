@@ -1,4 +1,4 @@
-/run/numberOfThreads 1
+/run/numberOfThreads 12
 
 /control/verbose 2
 #/control/cout/useBuffer
@@ -14,9 +14,6 @@
 #/testem/phys/setCuts 1 um
 #/cuts/setLowEdge 30 keV
 #/cuts/setLowEdge 1000 MeV
-#
-#
-
 
 #This must be run before initialization
 #/FACET/targetMaterial G4_Galactic
@@ -32,19 +29,16 @@
 /FACET/stepMax 0.1 um
 /FACET/nReplicas_z 10
 
-/FACET/targetThickness 1 mm
+/FACET/targetThickness 0.5 mm
 
 # particles class is added after the initialization
 /run/initialize
-# /testem/phys/SetGammaToMuPairFac  10000
-# /testem/phys/SetAnnihiToMuPairFac 10000
-/primary/sigz 2. um
-/primary/sigr 10. um
-/primary/emittance 40.
+/primary/sigz 15. um
+/primary/sigr 5. um
+/primary/emittance 50.
 
-/primary/momentum 101000. MeV  # Drive beam
-/primary/particle e-  # Drive beam
-#/primary/momentum  9850. MeV  # Trailing beam
+# /primary/momentum 10100. MeV  # Drive beam
+/primary/momentum  9850. MeV  # Trailing beam
 #  /process/em/deexcitation Target true true true
 #  /process/em/fluo true
 #  /process/em/auger true

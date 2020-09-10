@@ -14,12 +14,15 @@
 
 #include "PrimaryGeneratorMessenger.hh"
 //#include "ParticleH5FileReader.hh"
-class ParticleH5Filereader; 
+#include "TwissBeamGenerator.hh"
 
+class ParticleH5Filereader; 
+class TwissBeamGenerator;
 
 //------------------------------------------------------------------------------
   PrimaryGenerator::PrimaryGenerator()
-    : fMomentum(10000.0*MeV), fSig_r(10.*um), fSig_z(13.*um), fEmitt_n(20.)
+    : fMomentum(100.0*MeV), fSig_r(10.*um), fSig_z(13.*um), fEmitt_n(20.), fParticle("e-"),
+      fGENMODE("TWISS")
 //  : fpParticleGPS(0) 
 //------------------------------------------------------------------------------
 {
@@ -48,6 +51,17 @@ class ParticleH5Filereader;
 //    ParticleH5Filereader ph5 = ParticleH5FileReader();
  
  fParticleMessenger = new PrimaryGeneratorMessenger(this);
+
+  if (fGENMODE == "TWISS") {
+    fTwiss = TwissBeamGenerator();
+    fTwiss.Trigger();
+    G4cout << "=============================" << G4endl;
+    G4cout << "                             " << G4endl;
+    G4cout << "TWISS parameters set" << G4endl;
+    G4cout << "                             " << G4endl;
+    G4cout << "=============================" << G4endl;
+  } 
+
 }
 
 //------------------------------------------------------------------------------
@@ -146,13 +160,18 @@ void PrimaryGenerator::ElectronGun(G4Event* anEvent){
   // Particle table
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   // Setup for primary particle
-  G4String particleName = "e-";
+//  G4String particleName = "e-";
+  G4String particleName = fParticle;
+//  G4String particleName = "gamma";
+//  G4String particleName = "proton";
   G4double r1, r2; // Random number variables
+  G4double pos_X, pos_Y; // Position
+  G4double mom_X, mom_Y; // Momentum
 
 //  G4double momentum = PrimaryGenerator::EnergyDist()*GeV;
 //  G4double momentum = 10000.0*MeV;
   boxmuller (r1, r2, 0, 1);
-  G4double momentum = fMomentum + 0.00 * fMomentum * r1; // Assume 0.1 % energy spread
+  G4double momentum = fMomentum + 0.002 * fMomentum * r1; // Assume 0.2 % energy spread
 
   // Setup beam parameters
 //  G4double emitt_n = 20; // Normalized emittance mm-mrad
@@ -161,24 +180,36 @@ void PrimaryGenerator::ElectronGun(G4Event* anEvent){
 //  G4cout << "Emitt_n  0 " << emitt_n << G4endl;
 //  G4cout << "Emitt_g  0 " << emitt_g << G4endl;
 
-  G4double sigma_r = fSig_r; // beam radius
-  G4double sigma_z = fSig_z; // beam length
-  G4double sigma_rv = emitt_g/(sigma_r/um); // rad
-
+  if (strcmp(fGENMODE,"GAUSSIAN") == 0)
+  {
+    G4double sigma_r = fSig_r; // beam radius
+    G4double sigma_rv = emitt_g/(sigma_r/um); // rad
+  
+    boxmuller (r1, r2, 0, 1);
+    pos_X = sigma_r*r1;
+    mom_X = sin(sigma_rv*r2); 
+    boxmuller (r1, r2, 0, 1);
+    pos_Y = sigma_r*r1;
+    mom_Y = sin(sigma_rv*r2); 
+  } 
+  else if (strcmp(fGENMODE,"TWISS") == 0)
+  {
+    fTwiss.Shoot();
+    pos_X = fTwiss.GetX() * um;
+    mom_X = fTwiss.GetPX(); 
+    pos_Y = fTwiss.GetY() * um;
+    mom_Y = fTwiss.GetPY(); 
+//    G4cout << "Twiss parameters set " << G4endl;
+//    G4cout << pos_X/um << " " ;
+//    G4cout << mom_X << " " ;
+//    G4cout << pos_Y/um << " " ;
+//    G4cout << mom_Y << G4endl;
+//    G4cout << " " << G4endl;
+  }
 
   boxmuller (r1, r2, 0, 1);
-//  r1 = 0;
-//  r2 = 0;
-  G4double pos_X = sigma_r*r1;
-  G4double mom_X = sin(sigma_rv*r2); 
-
-  boxmuller (r1, r2, 0, 1);
-  G4double pos_Y = sigma_r*r1;
-  G4double mom_Y = sin(sigma_rv*r2); 
-
-  boxmuller (r1, r2, 0, 1);
-
-  G4double pos_Z_center = -50*um;
+  G4double sigma_z = fSig_z;
+  G4double pos_Z_center = -100*um;
   G4double pos_Z = sigma_z*r1 + pos_Z_center;
   G4double mom_Z = sqrt(1-mom_X*mom_X-mom_Y*mom_Y); 
 
@@ -202,4 +233,11 @@ void PrimaryGenerator::ElectronGun(G4Event* anEvent){
   anEvent->AddPrimaryVertex( primaryVertex );
 //  G4cout << "==============EofPart==============" << G4endl;
 }
+
+//  void PrimaryGenerator::SetParticle(G4String particleName)
+//  //------------------------------------------------------------------------------
+//  {
+//    fParticle = particleName;
+//  }
+
 

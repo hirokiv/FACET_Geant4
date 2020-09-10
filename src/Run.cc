@@ -17,12 +17,14 @@
 #include "Randomize.hh"
 #include <cmath>
 #include <boost/format.hpp>
+#include <iostream>
+#include <fstream>
 
 Run::Run()
   : G4Run(), fHCID1(-1), fHCID2(-1), fHCID3(-1), fHCID4(-1), fNumberOfEvents(0), 
     emitt_N(20), E_N(10*GeV), E_range(0.05), 
     xx2(std::vector<G4double>(emitt_N)),  vx2(std::vector<G4double>(emitt_N)), 
-     xvx(std::vector<G4double>(emitt_N)), E_count(std::vector<G4double>(emitt_N))
+     xvx(std::vector<G4double>(emitt_N)), E_count(std::vector<G4int>(emitt_N)), E_sum(std::vector<G4double>(emitt_N))
 {
   rootAnalysisManager1 = G4RootAnalysisManager::Instance();
   csvAnalysisManager = G4CsvAnalysisManager::Instance();
@@ -40,19 +42,61 @@ Run::Run()
 }
 
 Run::~Run()
-{}
+{
+//  WriteElectronsInfo();
+  WriteParticlesInfo();
+}
 
 void Run::WriteParticlesInfo()
 {
-  for (G4double emitt_idx = 0 ; emitt_idx < emitt_N; emitt_idx++){
-    G4double E_temp = emitt_idx / emitt_N*E_N;
-    G4double emittance = std::sqrt(xx2[emitt_idx]/emitt_N*vx2[emitt_idx]/emitt_N - pow(xvx[emitt_idx]/E_count[emitt_idx],2.0)) ;
-    G4cout << E_temp << "  ";
-    G4cout << std::sqrt(xx2[emitt_idx]/E_count[emitt_idx]) << "  "; //um
-    G4cout << std::sqrt(vx2[emitt_idx]/E_count[emitt_idx])*1000 << "  "; // mrad
-    G4cout << emittance << G4endl; //mm-mrad
+  std::ofstream outputfile("BeamParamsElectron.txt", std::ios::app);
+  outputfile << 
+"Energy [MeV], Mean energy [MeV], # of sampled particles, Sigma_x [um], Sigma_vx [urad], Epsilon_N [mm-mrad]"
+ << G4endl;
+
+  for (G4int emitt_idx = 0 ; emitt_idx < emitt_N; emitt_idx++){
+    G4double E_c_temp = (G4double)E_count[emitt_idx]; // # of electrons in pm 5 percent range
+    G4double E_temp = (G4double)(emitt_idx+1)/(G4double)emitt_N * E_N;  // in MeV
+    G4double E_ave = E_sum[emitt_idx] / E_c_temp; 
+    G4double emittance_n = std::sqrt(xx2[emitt_idx]*vx2[emitt_idx]/(E_c_temp*E_c_temp) - pow(xvx[emitt_idx]/E_c_temp,2.0)) * (E_ave/0.511+1);
+
+    outputfile << E_temp << "     ";
+    outputfile << E_ave / MeV << "     ";
+    outputfile << E_c_temp << "     ";
+    outputfile << std::sqrt(xx2[emitt_idx]/E_c_temp) << "     "; //um
+    outputfile << std::sqrt(vx2[emitt_idx]/E_c_temp)*1000. << "     "; // mrad
+    outputfile << emittance_n << G4endl; //mm-mrad
   }
+  outputfile << G4endl;
+  outputfile.close();
+
 }
+//void Run::WritePositronsInfo()
+//{
+//  std::ofstream outputfile("BeamParams.txt", std::ios::app);
+//  outputfile << 
+//"Energy [MeV], Mean energy [MeV], # of sampled particles, Sigma_x [um], Sigma_vx [urad], Epsilon_N [mm-mrad]"
+// << G4endl;
+//
+//  for (G4int emitt_idx = 0 ; emitt_idx < emitt_N; emitt_idx++){
+//    G4double E_c_temp = (G4double)E_count[emitt_idx]; // # of electrons in pm 5 percent range
+//    G4double E_temp = (G4double)(emitt_idx+1)/(G4double)emitt_N * E_N;  // in MeV
+//    G4double E_ave = E_sum[emitt_idx] / E_c_temp; 
+//    G4double emittance_n = std::sqrt(xx2[emitt_idx]*vx2[emitt_idx]/(E_c_temp*E_c_temp) - pow(xvx[emitt_idx]/E_c_temp,2.0)) * (E_ave/0.511+1);
+//
+//    outputfile << E_temp << "     ";
+//    outputfile << E_ave / MeV << "     ";
+//    outputfile << E_c_temp << "     ";
+//    outputfile << std::sqrt(xx2[emitt_idx]/E_c_temp) << "     "; //um
+//    outputfile << std::sqrt(vx2[emitt_idx]/E_c_temp)*1000. << "     "; // mrad
+//    outputfile << emittance_n << G4endl; //mm-mrad
+//  }
+//  outputfile << G4endl;
+//  outputfile.close();
+//
+//}
+
+
 
 void Run::Merge(const G4Run* aRun)
 {
@@ -69,11 +113,12 @@ void Run::RecordEvent(const G4Event* event)
   G4SDManager* sdm = G4SDManager::GetSDMpointer();
 
   // ===============================================================================
-  // Show initial source histogram
+  // Show initial source histogram and phase space
   //  Fill sixth H1
   // ===============================================================================
   rootAnalysisManager1->FillH1(6, event->GetPrimaryVertex()->GetPrimary()->GetKineticEnergy());
 
+  rootAnalysisManager1->FillH2(13, event->GetPrimaryVertex()->GetX0(), std::asin( event->GetPrimaryVertex()->GetPrimary()->GetMomentumDirection().x() ));
 
   // ===============================================================================
   //Sensitive detector fHCID1
@@ -173,8 +218,8 @@ void Run::RecordEvent(const G4Event* event)
         }
 
 // For QuickPIC output
-        G4double gamma = aHit->GetKineticEnergy() / 0.511 + 1;
-        if (gamma > 1.5) {
+        G4double E_gamma = aHit->GetKineticEnergy() / 0.511 + 1;
+        if (E_gamma > 1.5) {
           // Is electron? for the QuickPIC output
           if (aHit->GetParticleName() == "e-") {
             G4ThreeVector prePos = aHit->GetPrePos();
@@ -182,34 +227,55 @@ void Run::RecordEvent(const G4Event* event)
             G4double time = aHit->GetParticleTime();
             G4double c_light = 3e-1;   // speed of light in [m/ns]
             G4double z_init = - 50e-6; // Always start simulation at z=-50 um
-//            G4double gamma = aHit->GetKineticEnergy() / 0.511 + 1;
+//            G4double E_gamma = aHit->GetKineticEnergy() / 0.511 + 1;
 //            G4double l = std::sqrt(mom_dir.x()*mom_dir.x()+mom_dir.y()*mom_dir.y()+mom_dir.z()*mom_dir.z());
             csvAnalysisManager->FillNtupleDColumn(2, 0, (prePos.x()/m)            );
             csvAnalysisManager->FillNtupleDColumn(2, 1, (prePos.y()/m)             );
             csvAnalysisManager->FillNtupleDColumn(2, 2, (mom_dir.x())                     );
             csvAnalysisManager->FillNtupleDColumn(2, 3, (mom_dir.y())                     );
             csvAnalysisManager->FillNtupleDColumn(2, 4, (c_light*time-prePos.z()/m+z_init));
-            csvAnalysisManager->FillNtupleDColumn(2, 5, (gamma)                         );
+            csvAnalysisManager->FillNtupleDColumn(2, 5, (E_gamma)                         );
             csvAnalysisManager->AddNtupleRow(2);
             //  Fill fourth H1
   
+            rootAnalysisManager1->FillH1(4, aHit->GetKineticEnergy());
 // Filter out only primary electrons
             if (aHit->GetTrackID()==1) {
-              rootAnalysisManager1->FillH1(4, aHit->GetKineticEnergy());
               csvAnalysisManager->FillNtupleDColumn(4, 0, (prePos.x()/m)       );
               csvAnalysisManager->FillNtupleDColumn(4, 1, (prePos.y()/m)          );
               csvAnalysisManager->FillNtupleDColumn(4, 2, (mom_dir.x())           );
               csvAnalysisManager->FillNtupleDColumn(4, 3, (mom_dir.y())              );
               csvAnalysisManager->FillNtupleDColumn(4, 4, (c_light*time-prePos.z()/m+z_init));
-              csvAnalysisManager->FillNtupleDColumn(4, 5, (gamma)               );
+              csvAnalysisManager->FillNtupleDColumn(4, 5, (E_gamma)               );
               csvAnalysisManager->AddNtupleRow(4);
 	      //csvAnalysisManager->FillNtupleSColumn(4, 8, aHit->GetCreatorProcessName());
 	      //csvAnalysisManager->AddNtupleRow(4);
               rootAnalysisManager1->FillH1(9, aHit->GetKineticEnergy());
             }
 
+//  Some new features such as emittance calculations
+          // Calculate emittances
+            for (G4int emitt_idx = 0; emitt_idx<emitt_N ; emitt_idx++ ){
+              G4double E_temp = (G4double)(emitt_idx+1)/(G4double)emitt_N * E_N;  // in GeV
+              if ( (E_temp * (1+E_range) > aHit->GetKineticEnergy() ) && ( E_temp * (1-E_range) <  aHit->GetKineticEnergy() ) ){
+                xx2[emitt_idx] = xx2[emitt_idx] + pow(prePos.x()/um,2.0) ;          // um
+                vx2[emitt_idx] = vx2[emitt_idx] + pow(std::asin(mom_dir.x())/rad,2.0) ;        // rad
+                xvx[emitt_idx] = xvx[emitt_idx] + prePos.x()/um * std::asin(mom_dir.x())/rad; // mm-mrad
+                E_count[emitt_idx] = E_count[emitt_idx] + 1;
+                E_sum[emitt_idx] = E_sum[emitt_idx] + aHit->GetKineticEnergy()/MeV;
+  //		G4cout<< emitt_idx << G4endl;
+  //		G4cout<< E_count[emitt_idx] << G4endl;
+  //		G4cout<< xx2[emitt_idx] << G4endl;  // um*um
+  //		G4cout<< vx2[emitt_idx] << G4endl;  // rad*rad
+  //		G4cout<< xvx[emitt_idx] << G4endl;  // um*rad
+  //              G4cout << "Pos X : " << prePos.x()/um << G4endl;
+  //              G4cout << "Angle : " << std::asin(mom_dir.x())/rad << G4endl;
+              }
+              if (emitt_idx == emitt_N-1) {
+                rootAnalysisManager1->FillH2(14, prePos.x(), std::asin(mom_dir.x()));
+              }
+            }
 	//    rootAnalysisManager->FillH1(2, aHit->GetKineticEnergy());
-
           }
     
     //        // Is positron? for the QuickPIC output
@@ -218,15 +284,63 @@ void Run::RecordEvent(const G4Event* event)
             G4ThreeVector mom_dir = aHit->GetMomentumDirection();
             G4double time = aHit->GetParticleTime();   // nano second [ns]
             G4double c_light =    3.e-1;   // speed of light in [m/ns]
-            G4double z_init  = - 50.e-6; // Always start simulation at z=-50 um
+            G4double z_init  = - 100.e-6; // Always start simulation at z=-50 um
             csvAnalysisManager->FillNtupleDColumn(3, 0, prePos.x()/m                    );
             csvAnalysisManager->FillNtupleDColumn(3, 1, prePos.y()/m                    );
             csvAnalysisManager->FillNtupleDColumn(3, 2, mom_dir.x()                     );
             csvAnalysisManager->FillNtupleDColumn(3, 3, mom_dir.y()                     );
             csvAnalysisManager->FillNtupleDColumn(3, 4, c_light*time-prePos.z()/m+z_init);
-            csvAnalysisManager->FillNtupleDColumn(3, 5, gamma                           );
+            csvAnalysisManager->FillNtupleDColumn(3, 5, E_gamma                           );
             csvAnalysisManager->AddNtupleRow(3);
             rootAnalysisManager1->FillH1(5, aHit->GetKineticEnergy());
+          }
+    
+      // Is muon? for the QuickPIC output
+          if (aHit->GetParticleName() == "mu-") {
+            G4ThreeVector prePos = aHit->GetPrePos();
+            G4ThreeVector mom_dir = aHit->GetMomentumDirection();
+            G4double time = aHit->GetParticleTime();   // nano second [ns]
+            G4double c_light =    3.e-1;   // speed of light in [m/ns]
+            G4double z_init  = - 50.e-6; // Always start simulation at z=-50 um
+            csvAnalysisManager->FillNtupleDColumn(5, 0, prePos.x()/m                    );
+            csvAnalysisManager->FillNtupleDColumn(5, 1, prePos.y()/m                    );
+            csvAnalysisManager->FillNtupleDColumn(5, 2, mom_dir.x()                     );
+            csvAnalysisManager->FillNtupleDColumn(5, 3, mom_dir.y()                     );
+            csvAnalysisManager->FillNtupleDColumn(5, 4, c_light*time-prePos.z()/m+z_init);
+            csvAnalysisManager->FillNtupleDColumn(5, 5, E_gamma                           );
+            csvAnalysisManager->AddNtupleRow(5);
+            rootAnalysisManager1->FillH1(13, aHit->GetKineticEnergy());
+          }
+      // Is muon? for the QuickPIC output
+          if (aHit->GetParticleName() == "mu+") {
+            G4ThreeVector prePos = aHit->GetPrePos();
+            G4ThreeVector mom_dir = aHit->GetMomentumDirection();
+            G4double time = aHit->GetParticleTime();   // nano second [ns]
+            G4double c_light =    3.e-1;   // speed of light in [m/ns]
+            G4double z_init  = - 50.e-6; // Always start simulation at z=-50 um
+            csvAnalysisManager->FillNtupleDColumn(6, 0, prePos.x()/m                    );
+            csvAnalysisManager->FillNtupleDColumn(6, 1, prePos.y()/m                    );
+            csvAnalysisManager->FillNtupleDColumn(6, 2, mom_dir.x()                     );
+            csvAnalysisManager->FillNtupleDColumn(6, 3, mom_dir.y()                     );
+            csvAnalysisManager->FillNtupleDColumn(6, 4, c_light*time-prePos.z()/m+z_init);
+            csvAnalysisManager->FillNtupleDColumn(6, 5, E_gamma                           );
+            csvAnalysisManager->AddNtupleRow(6);
+            rootAnalysisManager1->FillH1(14, aHit->GetKineticEnergy());
+          }
+
+      // Is pion? 
+          if (aHit->GetParticleName() == "pi-") {
+            G4ThreeVector prePos = aHit->GetPrePos();
+            G4ThreeVector mom_dir = aHit->GetMomentumDirection();
+//            G4double time = aHit->GetParticleTime();   // nano second [ns]
+            rootAnalysisManager1->FillH1(15, aHit->GetKineticEnergy());
+          }
+      // Is muon? for the QuickPIC output
+          if (aHit->GetParticleName() == "pi+") {
+            G4ThreeVector prePos = aHit->GetPrePos();
+            G4ThreeVector mom_dir = aHit->GetMomentumDirection();
+//            G4double time = aHit->GetParticleTime();   // nano second [ns]
+            rootAnalysisManager1->FillH1(16, aHit->GetKineticEnergy());
           }
         }
       }
@@ -281,16 +395,7 @@ void Run::RecordEvent(const G4Event* event)
           rootAnalysisManager1->FillH2(3, prePos.x(), prePos.y());
           rootAnalysisManager1->FillH2(4, std::asin(mom_dir.x()), std::asin(mom_dir.y()));
 
-          // Calculate emittances
-          for (G4double emitt_idx = 0; emitt_idx<emitt_N ; emitt_idx++ ){
-            G4double E_temp = emitt_idx/emitt_N * E_N;
-            if ( (E_temp * (1+E_range) > aHit->GetKineticEnergy() ) && ( E_temp * (1-E_range) <  aHit->GetKineticEnergy() ) ){
-              xx2[emitt_idx] = xx2[emitt_idx] + pow(prePos.x(),2.0) / pow(um,2.0);          // um
-              vx2[emitt_idx] = vx2[emitt_idx] + pow(std::asin(mom_dir.x()),2.0) / pow(rad,2.0) ;        // rad
-              xvx[emitt_idx] = xvx[emitt_idx] + prePos.x() * std::asin(mom_dir.x()) /um / rad; // mm-mrad
-              E_count[emitt_idx]++;
-            }
-          }
+
         }
         // Is positron?
         if (aHit->GetParticleName() == "e+"   ) {
