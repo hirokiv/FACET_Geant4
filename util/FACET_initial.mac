@@ -7,6 +7,7 @@
 /tracking/verbose 0
 
 #Physics
+# Physics list is specified to emlivermoe in the source code
 #/testem/phys/addPhysics emlivermore
 #/testem/phys/addPhysics empenelope
 #/process/eLoss/CSDARange true
@@ -14,13 +15,11 @@
 #/testem/phys/setCuts 1 um
 #/cuts/setLowEdge 30 keV
 #/cuts/setLowEdge 1000 MeV
-#
-#
 
 
 #This must be run before initialization
 #/FACET/targetMaterial G4_Galactic
-# /FACET/targetMaterial G4_Sr
+#/FACET/targetMaterial G4_Sr
 /FACET/tubeMaterial G4_Galactic
 
 #/FACET/targetMaterial G4_Ta
@@ -32,7 +31,7 @@
 /FACET/stepMax 0.1 um
 /FACET/nReplicas_z 10
 
-/FACET/targetThickness 1 mm
+/FACET/targetThickness 0.1 mm
 
 # particles class is added after the initialization
 /run/initialize
@@ -45,17 +44,6 @@
 /primary/momentum 101000. MeV  # Drive beam
 /primary/particle e-  # Drive beam
 #/primary/momentum  9850. MeV  # Trailing beam
-#  /process/em/deexcitation Target true true true
-#  /process/em/fluo true
-#  /process/em/auger true
-#  /process/em/pixe true
-#  /process/em/deexcitationIgnoreCut true
-
-#/process/em/pixeXSmodel Empirical
-#/process/em/pixeXSmodel ECPSSR_FormFactor
-#/process/em/pixeXSmodel ECPSSR_Analytical
-#/process/em/pixeElecXSmodel Penelope
-# /process/em/pixeElecXSmodel Livermore
 
 # Set guns
 #//  /gun/particle e-

@@ -16,13 +16,13 @@
 //#include "ParticleH5FileReader.hh"
 #include "TwissBeamGenerator.hh"
 
-class ParticleH5Filereader; 
+// class ParticleH5FileReaderInstance; 
 class TwissBeamGenerator;
 
 //------------------------------------------------------------------------------
   PrimaryGenerator::PrimaryGenerator()
     : fMomentum(100.0*MeV), fSig_r(10.*um), fSig_z(13.*um), fEmitt_n(20.), fParticle("e-"),
-      fGENMODE("TWISS")
+      fGENMODE("GAUSS")
 //  : fpParticleGPS(0) 
 //------------------------------------------------------------------------------
 {
@@ -33,7 +33,6 @@ class TwissBeamGenerator;
     // Get the data from CSV File
     dataList = csvreader.getData();
     double ddata;
-    //
     // Print the content of row by row on screen
     for(std::vector<std::string> vec : dataList)
     {
@@ -43,14 +42,14 @@ class TwissBeamGenerator;
                 ddata = ::atof(data.c_str());
                 if (i==0) en_list.push_back(ddata);
                 if (i==3) CDF.push_back(ddata);
-//                G4cout<<data << " , ";
                 i++;
         }
-//        G4cout<<G4endl;
     }
-//    ParticleH5Filereader ph5 = ParticleH5FileReader();
+
+// Readout output data from QuickPIC (or OSIRIS)
+//     ParticleH5FileReader ph5 = ParticleH5FileReader();
  
- fParticleMessenger = new PrimaryGeneratorMessenger(this);
+   fParticleMessenger = new PrimaryGeneratorMessenger(this);
 
   if (fGENMODE == "TWISS") {
     fTwiss = TwissBeamGenerator();
@@ -74,6 +73,7 @@ class TwissBeamGenerator;
 }
 
 void boxmuller (G4double& z1, G4double& z2, G4double mu,G4double sigma) {
+  // Box Muller method for generating 
     const G4double pi = atan(1.0)*4;
     G4double num1,num2,x1,x2;
     // uniform random value between 0~1
@@ -106,8 +106,10 @@ G4double PrimaryGenerator::EnergyDist()
 {
   PrimaryGenerator::ElectronGun( anEvent );
 
-//    ph5.StoreFiles();
-//  PrimaryGenerator::ReadH5( anEvent );
+  if (fGENMODE == "HDF5") {
+    ph5.StoreFiles();
+    PrimaryGenerator::ReadH5( anEvent );
+  }
 }
 
 void PrimaryGenerator::ReadH5(G4Event* anEvent){
@@ -117,7 +119,7 @@ void PrimaryGenerator::ReadH5(G4Event* anEvent){
   G4String particleName = "e+";
   G4double RM = 0.511 * MeV;
 
-//  ParticleH5Filereader ph5 = ParticleH5FileReader();
+  ph5 = ParticleH5FileReader();
 
   G4double pos_X =  ph5.GetX1();
   G4double mom_X = (ph5.GetP1() )*RM; 

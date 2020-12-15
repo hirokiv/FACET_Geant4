@@ -16,6 +16,8 @@
 #include "boost/multi_array.hpp"
 #include <string>
 
+#define NNMACRO 256 // Specify the maximum number of particles to be injected through reading a file
+ 
 //------------------------------------------------------------------------------
   class ParticleH5FileReader 
 //------------------------------------------------------------------------------
@@ -49,13 +51,13 @@
 //    boost::multi_array<double,2> *x1;
 //    boost::multi_array<double,2> *x2;
 //    boost::multi_array<double,2> *x3;
-    G4int NN = 300000;
-    G4double p1[300000] = {};
-    G4double p2[300000] = {};
-    G4double p3[300000] = {};
-    G4double x1[300000] = {};
-    G4double x2[300000] = {};
-    G4double x3[300000] = {};
+    G4int NN = NNMACRO;  
+    G4double p1[NNMACRO] = {};
+    G4double p2[NNMACRO] = {};
+    G4double p3[NNMACRO] = {};
+    G4double x1[NNMACRO] = {};
+    G4double x2[NNMACRO] = {};
+    G4double x3[NNMACRO] = {};
 //    G4GeneralParticleSource* fpParticleGPS;
 };
 
