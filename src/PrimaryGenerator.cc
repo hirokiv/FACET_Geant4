@@ -21,13 +21,14 @@ class TwissBeamGenerator;
 
 //------------------------------------------------------------------------------
   PrimaryGenerator::PrimaryGenerator()
-    : fMomentum(100.0*MeV), fSig_r(10.*um), fSig_z(13.*um), fEmitt_n(20.), fParticle("e-"),
-      fGENMODE("GAUSS")
+    : fMomentum(10000.0*MeV), fSig_r(10.*um), fSig_z(13.*um), fEmitt_n(20.), fParticle("e-"),
+      fGENMODE("GAUSSIAN")
 //  : fpParticleGPS(0) 
 //------------------------------------------------------------------------------
 {
 //  fpParticleGun = new G4ParticleGun();
  // fpParticleGPS = new G4GeneralParticleSource();
+ 
 //    // Creating an object of CSVWriter
     CSVReader csvreader = CSVReader("../CSV/spectrum_entire.csv",",");
     // Get the data from CSV File
@@ -104,12 +105,14 @@ G4double PrimaryGenerator::EnergyDist()
   void PrimaryGenerator::GeneratePrimaries(G4Event* anEvent)
 //------------------------------------------------------------------------------
 {
-  PrimaryGenerator::ElectronGun( anEvent );
 
   if (fGENMODE == "HDF5") {
     ph5.StoreFiles();
     PrimaryGenerator::ReadH5( anEvent );
+  } else {
+    PrimaryGenerator::ElectronGun( anEvent );
   }
+
 }
 
 void PrimaryGenerator::ReadH5(G4Event* anEvent){
@@ -158,6 +161,7 @@ void PrimaryGenerator::ReadH5(G4Event* anEvent){
 //  G4cout << "==============EofPart==============" << G4endl;
 }
 
+
 void PrimaryGenerator::ElectronGun(G4Event* anEvent){
   // Particle table
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
@@ -171,16 +175,15 @@ void PrimaryGenerator::ElectronGun(G4Event* anEvent){
   G4double mom_X, mom_Y; // Momentum
 
 //  G4double momentum = PrimaryGenerator::EnergyDist()*GeV;
-//  G4double momentum = 10000.0*MeV;
   boxmuller (r1, r2, 0, 1);
-  G4double momentum = fMomentum + 0.002 * fMomentum * r1; // Assume 0.2 % energy spread
+  G4double momentum = fMomentum * (1 + 0.002 * r1); // Assume 0.2 % energy spread
 
   // Setup beam parameters
 //  G4double emitt_n = 20; // Normalized emittance mm-mrad
   G4double emitt_n = fEmitt_n; // Normalized emittance mm-mrad
   G4double emitt_g = emitt_n/(momentum*1000/GeV/0.511); // Geometric emittance mm-mrad
-//  G4cout << "Emitt_n  0 " << emitt_n << G4endl;
-//  G4cout << "Emitt_g  0 " << emitt_g << G4endl;
+//  G4cout << "Emitt_n0 " << emitt_n << G4endl;
+//  G4cout << "Emitt_g0 " << emitt_g << G4endl;
 
   if (strcmp(fGENMODE,"GAUSSIAN") == 0)
   {
@@ -207,6 +210,9 @@ void PrimaryGenerator::ElectronGun(G4Event* anEvent){
 //    G4cout << pos_Y/um << " " ;
 //    G4cout << mom_Y << G4endl;
 //    G4cout << " " << G4endl;
+  } else {
+    G4cout << "fGENMODE not properly set" << G4endl;
+    exit( 1 );
   }
 
   boxmuller (r1, r2, 0, 1);

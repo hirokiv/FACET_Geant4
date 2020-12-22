@@ -29,6 +29,7 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 
   G4CsvAnalysisManager* csvAnalysisManager = G4CsvAnalysisManager::Instance();
   csvAnalysisManager->OpenFile();
+
 }
 
 void RunAction::EndOfRunAction(const G4Run* run)
@@ -54,7 +55,10 @@ void RunAction::EndOfRunAction(const G4Run* run)
       G4cout << "\n==================================\n" << G4endl;
       G4cout << "\nTotal number of events: " << aRun->GetNumberOfEvents() << G4endl;
   }
-
+  csvAnalysisManager->Write();
+  csvAnalysisManager->CloseFile();
+ 
+  fAnalysisManager->~AnalysisManager();
 }
 
 

@@ -21,8 +21,7 @@ AnalysisManager::~AnalysisManager()
 void AnalysisManager::Book()
 {
   G4RootAnalysisManager* rootAnalysisManager1 = G4RootAnalysisManager::Instance();
-//  G4RootAnalysisManager* rootAnalysisManager2 = G4RootAnalysisManager::Instance();
-  //rootAnalysisManager->SetFileName(fFileName);
+  // rootAnalysisManager1->SetFileName(fFileName);
   rootAnalysisManager1->SetVerboseLevel(1);
   rootAnalysisManager1->SetActivation(true);
 
@@ -187,14 +186,23 @@ void AnalysisManager::Book()
   csvAnalysisManager->CreateNtupleDColumn("Gamma (Energy)");
   csvAnalysisManager->FinishNtuple();
 
-  csvAnalysisManager->CreateNtuple("05", "Beam properties per each Energy bin");
-  csvAnalysisManager->CreateNtupleDColumn("Energy [MeV]");
-  csvAnalysisManager->CreateNtupleDColumn("# of sampled particles");
-  csvAnalysisManager->CreateNtupleDColumn("Sigma_x [um]");
-  csvAnalysisManager->CreateNtupleDColumn("Sigma_vx [urad]");
-  csvAnalysisManager->CreateNtupleDColumn("Epsilon_N [mm-mrad]");
+  csvAnalysisManager->CreateNtuple("05", "mu- properties per each Energy bin");
+  csvAnalysisManager->CreateNtupleDColumn("X [m]");
+  csvAnalysisManager->CreateNtupleDColumn("Y [m]");
+  csvAnalysisManager->CreateNtupleDColumn("px/pz");
+  csvAnalysisManager->CreateNtupleDColumn("py/pz");
+  csvAnalysisManager->CreateNtupleDColumn("CT-Z[m]");
+  csvAnalysisManager->CreateNtupleDColumn("Gamma (Energy)");
   csvAnalysisManager->FinishNtuple();
 
+  csvAnalysisManager->CreateNtuple("06", "mu+ properties per each Energy bin");
+  csvAnalysisManager->CreateNtupleDColumn("X [m]");
+  csvAnalysisManager->CreateNtupleDColumn("Y [m]");
+  csvAnalysisManager->CreateNtupleDColumn("px/pz");
+  csvAnalysisManager->CreateNtupleDColumn("py/pz");
+  csvAnalysisManager->CreateNtupleDColumn("CT-Z[m]");
+  csvAnalysisManager->CreateNtupleDColumn("Gamma (Energy)");
+  csvAnalysisManager->FinishNtuple();
 
 }
 void AnalysisManager::PrintStatistic()

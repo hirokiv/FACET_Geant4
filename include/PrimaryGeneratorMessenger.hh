@@ -62,6 +62,7 @@ class PrimaryGeneratorMessenger : public G4UImessenger
     G4UIcmdWithADoubleAndUnit* fSetSigzCmd;
     G4UIcmdWithADouble* fSetEmittanceCmd;
     G4UIcmdWithAString* fSetParticleCmd;
+    G4UIcmdWithAString* fSetGENMODECmd;
 };
 
 #endif

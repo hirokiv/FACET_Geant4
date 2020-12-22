@@ -131,7 +131,6 @@ void Run::RecordEvent(const G4Event* event)
   TargetHitsCollection* target = NULL;
   if (mHCE1) {
     target = (TargetHitsCollection*)(mHCE1->GetHC(fHCID1));
-    //G4cout << detectorHC2 << G4endl;
   }
 
   if (target) {
@@ -183,6 +182,8 @@ void Run::RecordEvent(const G4Event* event)
   if (mHCE2) {
     detector = (DetectorHitsCollection*)(mHCE2->GetHC(fHCID2));
   }
+
+  G4double z_init  = - 100.e-6; // Always start simulation by putting the incident electron/gammas at z=-100 um. Compensate the time gap ct-z when exporting QuickPIC input
   if (detector) {
     G4int n_hit = detector->entries();
     //Only the first entry is taken
@@ -226,7 +227,6 @@ void Run::RecordEvent(const G4Event* event)
             G4ThreeVector mom_dir = aHit->GetMomentumDirection();
             G4double time = aHit->GetParticleTime();
             G4double c_light = 3e-1;   // speed of light in [m/ns]
-            G4double z_init = - 50e-6; // Always start simulation at z=-50 um
 //            G4double E_gamma = aHit->GetKineticEnergy() / 0.511 + 1;
 //            G4double l = std::sqrt(mom_dir.x()*mom_dir.x()+mom_dir.y()*mom_dir.y()+mom_dir.z()*mom_dir.z());
             csvAnalysisManager->FillNtupleDColumn(2, 0, (prePos.x()/m)            );
@@ -253,7 +253,7 @@ void Run::RecordEvent(const G4Event* event)
               rootAnalysisManager1->FillH1(9, aHit->GetKineticEnergy());
             }
 
-//  Some new features such as emittance calculations
+//  Added features
           // Calculate emittances
             for (G4int emitt_idx = 0; emitt_idx<emitt_N ; emitt_idx++ ){
               G4double E_temp = (G4double)(emitt_idx+1)/(G4double)emitt_N * E_N;  // in GeV
@@ -263,6 +263,8 @@ void Run::RecordEvent(const G4Event* event)
                 xvx[emitt_idx] = xvx[emitt_idx] + prePos.x()/um * std::asin(mom_dir.x())/rad; // mm-mrad
                 E_count[emitt_idx] = E_count[emitt_idx] + 1;
                 E_sum[emitt_idx] = E_sum[emitt_idx] + aHit->GetKineticEnergy()/MeV;
+
+  //  Debug information
   //		G4cout<< emitt_idx << G4endl;
   //		G4cout<< E_count[emitt_idx] << G4endl;
   //		G4cout<< xx2[emitt_idx] << G4endl;  // um*um
@@ -270,6 +272,7 @@ void Run::RecordEvent(const G4Event* event)
   //		G4cout<< xvx[emitt_idx] << G4endl;  // um*rad
   //              G4cout << "Pos X : " << prePos.x()/um << G4endl;
   //              G4cout << "Angle : " << std::asin(mom_dir.x())/rad << G4endl;
+  
               }
               if (emitt_idx == emitt_N-1) {
                 rootAnalysisManager1->FillH2(14, prePos.x(), std::asin(mom_dir.x()));
@@ -284,7 +287,6 @@ void Run::RecordEvent(const G4Event* event)
             G4ThreeVector mom_dir = aHit->GetMomentumDirection();
             G4double time = aHit->GetParticleTime();   // nano second [ns]
             G4double c_light =    3.e-1;   // speed of light in [m/ns]
-            G4double z_init  = - 100.e-6; // Always start simulation at z=-50 um
             csvAnalysisManager->FillNtupleDColumn(3, 0, prePos.x()/m                    );
             csvAnalysisManager->FillNtupleDColumn(3, 1, prePos.y()/m                    );
             csvAnalysisManager->FillNtupleDColumn(3, 2, mom_dir.x()                     );
@@ -301,7 +303,6 @@ void Run::RecordEvent(const G4Event* event)
             G4ThreeVector mom_dir = aHit->GetMomentumDirection();
             G4double time = aHit->GetParticleTime();   // nano second [ns]
             G4double c_light =    3.e-1;   // speed of light in [m/ns]
-            G4double z_init  = - 50.e-6; // Always start simulation at z=-50 um
             csvAnalysisManager->FillNtupleDColumn(5, 0, prePos.x()/m                    );
             csvAnalysisManager->FillNtupleDColumn(5, 1, prePos.y()/m                    );
             csvAnalysisManager->FillNtupleDColumn(5, 2, mom_dir.x()                     );
@@ -317,7 +318,6 @@ void Run::RecordEvent(const G4Event* event)
             G4ThreeVector mom_dir = aHit->GetMomentumDirection();
             G4double time = aHit->GetParticleTime();   // nano second [ns]
             G4double c_light =    3.e-1;   // speed of light in [m/ns]
-            G4double z_init  = - 50.e-6; // Always start simulation at z=-50 um
             csvAnalysisManager->FillNtupleDColumn(6, 0, prePos.x()/m                    );
             csvAnalysisManager->FillNtupleDColumn(6, 1, prePos.y()/m                    );
             csvAnalysisManager->FillNtupleDColumn(6, 2, mom_dir.x()                     );

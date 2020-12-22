@@ -1,6 +1,6 @@
 /run/numberOfThreads 1
 
-/control/verbose 2
+/control/verbose 1
 #/control/cout/useBuffer
 /run/verbose 0
 /event/verbose 0
@@ -17,13 +17,19 @@
 #/cuts/setLowEdge 1000 MeV
 
 
+# Geometry materials Galactic=Vacuum, Ta=tantalum, etc.
 #This must be run before initialization
 #/FACET/targetMaterial G4_Galactic
 #/FACET/targetMaterial G4_Sr
 /FACET/tubeMaterial G4_Galactic
 
-#/FACET/targetMaterial G4_Ta
 /FACET/targetMaterial G4_Ta
+#/FACET/targetMaterial G4_Galactic
+/FACET/targetThickness 0.25 mm
+# you cannot set /FACET/targetThickness 0.0 mm
+# set targetMaterial to be G4_Galactic if you wanna test free propagation
+
+
 # Magnetic field due to instability is defined here
 /FACET/instability false
 /FACET/fieldStrength 1. tesla
@@ -31,17 +37,16 @@
 /FACET/stepMax 0.1 um
 /FACET/nReplicas_z 10
 
-/FACET/targetThickness 0.1 mm
-
 # particles class is added after the initialization
 /run/initialize
 # /testem/phys/SetGammaToMuPairFac  10000
 # /testem/phys/SetAnnihiToMuPairFac 10000
+/primary/GENMODE GAUSSIAN
 /primary/sigz 2. um
 /primary/sigr 10. um
 /primary/emittance 40.
 
-/primary/momentum 101000. MeV  # Drive beam
+/primary/momentum 5100. MeV  # Drive beam
 /primary/particle e-  # Drive beam
 #/primary/momentum  9850. MeV  # Trailing beam
 

@@ -54,6 +54,7 @@ class PrimaryGeneratorMessenger;
     void SetSigr(G4double sigr)            {fSig_r = sigr; };
     void SetSigz(G4double sigz)            {fSig_z = sigz; };
     void SetParticle(G4String specy)       {fParticle = specy; };
+    void SetGENMODE(G4String GENMODE)       {fGENMODE = GENMODE; };
 };
 
 #endif

@@ -97,6 +97,12 @@ PrimaryGeneratorMessenger::
   fSetParticleCmd->SetGuidance(" Set particle.");
   fSetParticleCmd->SetParameterName("specy",true);
   fSetParticleCmd->SetDefaultValue("e-");
+
+  fSetGENMODECmd = new G4UIcmdWithAString("/primary/GENMODE",this);
+  fSetGENMODECmd->SetGuidance(" Generation mode choice : GAUSSIAN, TWISS, HDF5");
+  fSetGENMODECmd->SetCandidates("GAUSSIAN TWISS HDF5");
+  fSetGENMODECmd->SetParameterName("GENMODE",true);
+  fSetGENMODECmd->SetDefaultValue("GAUSSIAN");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -111,6 +117,7 @@ PrimaryGeneratorMessenger::~PrimaryGeneratorMessenger()
   delete fSetSigrCmd;
   delete fSetSigzCmd;
   delete fSetParticleCmd;
+  delete fSetGENMODECmd;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -127,7 +134,10 @@ void PrimaryGeneratorMessenger::
 //  if( command == fSetZvertexCmd)
 //   { fAction->SetZvertex(fSetZvertexCmd->GetNewDoubleValue(newValue));}
   if( command == fSetMomentumCmd)
-   { fAction->SetMomentum(fSetMomentumCmd->GetNewDoubleValue(newValue));}
+   {
+      fAction->SetMomentum(fSetMomentumCmd->GetNewDoubleValue(newValue));
+      G4cout << " Momentum changed to " << newValue << G4endl;
+   }
   if( command == fSetSigrCmd)
    { fAction->SetSigr(fSetSigrCmd->GetNewDoubleValue(newValue));}
   if( command == fSetSigzCmd)
@@ -139,5 +149,10 @@ void PrimaryGeneratorMessenger::
     {
      fAction->SetParticle(newValue);      
     }
+  if( command == fSetGENMODECmd)
+    {
+     fAction->SetGENMODE(newValue);      
+    }
+
 
 }
