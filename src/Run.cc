@@ -24,11 +24,11 @@ Run::Run()
   : G4Run(), fHCID1(-1), fHCID2(-1), fHCID3(-1), fHCID4(-1), fNumberOfEvents(0), 
     emitt_N(20), E_N(10*GeV), E_range(0.05), 
     xx2(std::vector<G4double>(emitt_N)),  vx2(std::vector<G4double>(emitt_N)), 
-     xvx(std::vector<G4double>(emitt_N)), E_count(std::vector<G4int>(emitt_N)), E_sum(std::vector<G4double>(emitt_N))
+     xvx(std::vector<G4double>(emitt_N)), E_count(std::vector<G4int>(emitt_N)), E_sum(std::vector<G4double>(emitt_N)), fString("BeamParamsElectron.txt")
 {
   rootAnalysisManager1 = G4RootAnalysisManager::Instance();
   csvAnalysisManager = G4CsvAnalysisManager::Instance();
-
+  ParticlesInfoFileGen(fString);
 //  emitt_N = 20;
 //  E_N = 10*GeV; //GeV
 //  E_range = 0.05; // \pm 5%
@@ -43,13 +43,18 @@ Run::Run()
 
 Run::~Run()
 {
-//  WriteElectronsInfo();
-  WriteParticlesInfo();
+//  std::string str = "BeamParamsElectron.txt";
+//  WriteParticlesInfo(str);
 }
 
-void Run::WriteParticlesInfo()
+void  Run::ParticlesInfoFileGen(std::string str)
 {
-  std::ofstream outputfile("BeamParamsElectron.txt", std::ios::app);
+  std::ofstream File(str);
+}
+
+void Run::WriteParticlesInfo(std::string str)
+{
+  std::ofstream outputfile(str, std::ios::app);
   outputfile << 
 "Energy [MeV], Mean energy [MeV], # of sampled particles, Sigma_x [um], Sigma_vx [urad], Epsilon_N [mm-mrad]"
  << G4endl;
@@ -71,6 +76,7 @@ void Run::WriteParticlesInfo()
   outputfile.close();
 
 }
+
 //void Run::WritePositronsInfo()
 //{
 //  std::ofstream outputfile("BeamParams.txt", std::ios::app);
@@ -462,3 +468,4 @@ void Run::RecordEvent(const G4Event* event)
 
   G4Run::RecordEvent(event);
 }
+

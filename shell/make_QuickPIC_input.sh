@@ -1,6 +1,6 @@
-#!/bin/sh
-rm -f beam?.txt
 rm -f beam?_temp.txt
+
+echo "Writing the progress to process.log....."
 
 echo "make_QuickPIC.sh" > process.log
 
@@ -27,9 +27,6 @@ mv beam_prim_ele.txt  beam_prim_ele_temp.txt
 cat beam_prim_ele_temp.txt | sed -e '1000001,$d' > beam_prim_ele.txt
 rm  beam_prim_ele_temp.txt
 
-echo "======================================" >> process.log
-echo "beam3 & beam4 created"                  >> process.log
-echo "======================================" >> process.log
 
 # Shift beam files by 150 um to generate drive beam
 echo "======================================" >> process.log
@@ -42,11 +39,16 @@ python3 ../python/inject_params.py "beam_positron" >> process.log
 # Register shifted beam file as beam3 and beam 4
 cat beam_electron.txt_shift_150*  > beam1.txt
 cat beam_positron.txt_shift_150*  > beam2.txt
-cat beam_electron.txt_shift_0*  > beam3.txt
-cat beam_positron.txt_shift_0*  > beam4.txt
 echo "======================================" >> process.log
 echo "beam1 & beam2 created"                  >> process.log
 echo "======================================" >> process.log
+
+cat beam_electron.txt_shift_0*  > beam3.txt
+cat beam_positron.txt_shift_0*  > beam4.txt
+echo "======================================" >> process.log
+echo "beam3 & beam4 created"                  >> process.log
+echo "======================================" >> process.log
+
 # # Add blank lines ( Specification of QuickPIC )
 # echo " " >> beam1.txt
 # echo " " >> beam2.txt
@@ -70,4 +72,15 @@ cat beam3_temp.txt | sed -e '500001,$d' > beam3.txt
 
 
 rm  -f beam?_temp.txt
+for i in `seq 0 18`
+do
+  for j in prim_ele positron electron
+  do
+    filename="beam_${j}_t${i}.txt"
+    if [ -e $filename ]; then
+      rm -f $filename
+    fi
+  done
+done
+
 

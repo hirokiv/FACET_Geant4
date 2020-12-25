@@ -18,9 +18,11 @@ public:
 
   virtual void RecordEvent(const G4Event*);
   virtual void Merge(const G4Run*);
-  void WriteParticlesInfo();
+  void WriteParticlesInfo(std::string str);
+  void ParticlesInfoFileGen(std::string str);
+  std::string GetFilename() {return fString;};
 
-  G4int GetNumberOfEvents() {return fNumberOfEvents;}
+  G4int GetNumberOfEvents() {return fNumberOfEvents;};
 
 private:
   G4int fHCID1;
@@ -38,6 +40,8 @@ private:
   std::vector<G4double> xvx; // mm-mrad
   std::vector<G4int> E_count; // Number of electrons used for the calculation
   std::vector<G4double> E_sum; // Number of electrons used for the calculation
+
+  std::string fString; // File name for writing electron information
 
   G4RootAnalysisManager* rootAnalysisManager1;
   G4RootAnalysisManager* rootAnalysisManager2;

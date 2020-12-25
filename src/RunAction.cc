@@ -28,7 +28,10 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
   }
 
   G4CsvAnalysisManager* csvAnalysisManager = G4CsvAnalysisManager::Instance();
-  csvAnalysisManager->OpenFile();
+
+  if (csvAnalysisManager->IsActive() ) {
+    csvAnalysisManager->OpenFile();
+  }
 
 }
 
@@ -54,11 +57,19 @@ void RunAction::EndOfRunAction(const G4Run* run)
 
       G4cout << "\n==================================\n" << G4endl;
       G4cout << "\nTotal number of events: " << aRun->GetNumberOfEvents() << G4endl;
+
+  } else {
+      aRun->WriteParticlesInfo(aRun->GetFilename());
   }
+
+
   csvAnalysisManager->Write();
   csvAnalysisManager->CloseFile();
  
   fAnalysisManager->~AnalysisManager();
+
+  // Write text info on electron beams
+//  std::string str = "BeamParamsElectron.txt";
 }
 
 

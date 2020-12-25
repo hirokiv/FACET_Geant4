@@ -1,4 +1,4 @@
-/run/numberOfThreads 1
+/run/numberOfThreads 4
 
 /control/verbose 1
 #/control/cout/useBuffer
