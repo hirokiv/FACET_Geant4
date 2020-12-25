@@ -1,0 +1,113 @@
+make_QuickPIC.sh
+======================================
+make_QuickPIC.sh call comma2space.sh
+- particles numbers will be truncated   
+======================================
+make_QuickPIC.sh - Generating beam1 and beam2 
+===== Comma2space_electron.sh called =====
+ 
+ - # of entire electrons
+102308 beam_electron.txt
+===== Comma2space_positron.sh called =====
+ 
+ - #  positrons
+817 beam_positron.txt
+===== Comma2space.sh called =====
+ 
+ - # of primary electrons 
+99996 beam_prim_ele.txt
+======================================
+make_QuickPIC.sh call inject_params.py
+======================================
+=========================
+beam_electron being processed
+=========================
+# of particles   : 102308
+medcnt/ 20 : 5116
+=========================
+Shift in CT-Z for 0 um
+=========================
+Average in X (m)
+ mean   -2.606782239277475e-08
+ sigma  1.4741268861959458e-05
+Average in Y (m)
+ mean   -1.715647654853969e-08
+ sigma  1.376320168335931e-05
+Average of U (rad)
+ mean   0.00014863868632859797
+ sigma  0.05318129312533596
+Average of V (rad)
+ mean   -6.930629282279373e-05
+ sigma  0.051214709813567856
+Average of CT-Z (m)
+ mean   1.1394092790905274e-06
+ sigma  1.7070493436268083e-05
+=========================
+=========================
+Shift in CT-Z for 150 um
+=========================
+Average in X (m)
+ mean   -2.606782239277475e-08
+ sigma  1.4741268861959458e-05
+Average in Y (m)
+ mean   -1.715647654853969e-08
+ sigma  1.376320168335931e-05
+Average of U (rad)
+ mean   0.00014863868632859797
+ sigma  0.05318129312533596
+Average of V (rad)
+ mean   -6.930629282279373e-05
+ sigma  0.051214709813567856
+Average of CT-Z (m)
+ mean   -0.00014886059072090948
+ sigma  1.7070493436268083e-05
+=========================
+=========================
+beam_positron being processed
+=========================
+# of particles   : 817
+medcnt/ 20 : 41
+=========================
+Shift in CT-Z for 0 um
+=========================
+Average in X (m)
+ mean   1.671235861689108e-07
+ sigma  1.7481307249631605e-05
+Average in Y (m)
+ mean   1.24977449510404e-07
+ sigma  1.8170659024402487e-05
+Average of U (rad)
+ mean   0.0025417730569033043
+ sigma  0.12791746563391088
+Average of V (rad)
+ mean   -0.007314442472288862
+ sigma  0.12978529644419257
+Average of CT-Z (m)
+ mean   2.723254971799266e-06
+ sigma  1.6740865907834665e-05
+=========================
+=========================
+Shift in CT-Z for 150 um
+=========================
+Average in X (m)
+ mean   1.671235861689108e-07
+ sigma  1.7481307249631605e-05
+Average in Y (m)
+ mean   1.24977449510404e-07
+ sigma  1.8170659024402487e-05
+Average of U (rad)
+ mean   0.0025417730569033043
+ sigma  0.12791746563391088
+Average of V (rad)
+ mean   -0.007314442472288862
+ sigma  0.12978529644419257
+Average of CT-Z (m)
+ mean   -0.00014727674502820073
+ sigma  1.6740865907834665e-05
+=========================
+======================================
+beam1 & beam2 created
+======================================
+======================================
+beam3 & beam4 created
+======================================

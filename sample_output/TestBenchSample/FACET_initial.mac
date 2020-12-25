@@ -1,0 +1,59 @@
+/run/numberOfThreads 4
+
+/control/verbose 1
+#/control/cout/useBuffer
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+#Physics
+# Physics list is specified to emlivermoe in the source code
+#/testem/phys/addPhysics emlivermore
+#/testem/phys/addPhysics empenelope
+#/process/eLoss/CSDARange true
+#/run/setCut 100 nm
+#/testem/phys/setCuts 1 um
+#/cuts/setLowEdge 30 keV
+#/cuts/setLowEdge 1000 MeV
+
+
+# Geometry materials Galactic=Vacuum, Ta=tantalum, etc.
+#This must be run before initialization
+#/FACET/targetMaterial G4_Galactic
+#/FACET/targetMaterial G4_Sr
+/FACET/tubeMaterial G4_Galactic
+
+/FACET/targetMaterial G4_Ta
+#/FACET/targetMaterial G4_Galactic
+/FACET/targetThickness 0.25 mm
+# you cannot set /FACET/targetThickness 0.0 mm
+# set targetMaterial to be G4_Galactic if you wanna test free propagation
+
+
+# Magnetic field due to instability is defined here
+/FACET/instability false
+/FACET/fieldStrength 1. tesla
+/FACET/fieldWavelength .25 um
+/FACET/stepMax 0.1 um
+/FACET/nReplicas_z 10
+
+# particles class is added after the initialization
+/run/initialize
+# /testem/phys/SetGammaToMuPairFac  10000
+# /testem/phys/SetAnnihiToMuPairFac 10000
+/primary/GENMODE GAUSSIAN
+/primary/sigz 2. um
+/primary/sigr 10. um
+/primary/emittance 40.
+
+/primary/momentum 5100. MeV  # Drive beam
+/primary/particle e-  # Drive beam
+#/primary/momentum  9850. MeV  # Trailing beam
+
+# Set guns
+#//  /gun/particle e-
+#//  /gun/energy 10 GeV
+#//  /gun/position 0. 0. -50. um
+#//  /gun/direction 0. 0. 1.
+
+
