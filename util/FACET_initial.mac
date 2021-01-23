@@ -1,8 +1,8 @@
-/run/numberOfThreads 4
+# /run/numberOfThreads 4
 
-/control/verbose 1
+/control/verbose 2
 #/control/cout/useBuffer
-/run/verbose 0
+/run/verbose 2
 /event/verbose 0
 /tracking/verbose 0
 
@@ -23,9 +23,17 @@
 #/FACET/targetMaterial G4_Sr
 /FACET/tubeMaterial G4_Galactic
 
-/FACET/targetMaterial G4_Ta
 #/FACET/targetMaterial G4_Galactic
-/FACET/targetThickness 0.25 mm
+# /FACET/targetMaterial G4_Ta
+# /FACET/targetThickness 0.25 mm
+
+# Use Xe jet instead
+# /FACET/XeDensity 2.953 g/cm3
+/FACET/XeDensity 10 g/cm3 # alwasy call this earlier than specifying targetMaterial->liquidXe
+/FACET/targetMaterial liquidXe
+# /FACET/targetThickness 2.83 cm 
+/FACET/targetThickness 0.172 cm 
+
 # you cannot set /FACET/targetThickness 0.0 mm
 # set targetMaterial to be G4_Galactic if you wanna test free propagation
 
@@ -46,7 +54,7 @@
 /primary/sigr 10. um
 /primary/emittance 40.
 
-/primary/momentum 5100. MeV  # Drive beam
+/primary/momentum 10100. MeV  # Drive beam
 /primary/particle e-  # Drive beam
 #/primary/momentum  9850. MeV  # Trailing beam
 

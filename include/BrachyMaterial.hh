@@ -38,19 +38,24 @@
 #ifndef BrachyMaterial_H
 #define BrachyMaterial_H 1
 #include "globals.hh"
-class G4Material;
 
+class G4Material;
+class BrachyMaterialMessenger;
 
 class BrachyMaterial
-{ public:
+{ 
+public:
   BrachyMaterial();
   ~ BrachyMaterial();
 
-public:
   void  DefineMaterials();
-
-public:
+  void  DefineUserDefinedXeJet();
   G4Material* GetMat(G4String);
+  void  SetTargetXeDensity(G4double);
+
+private:
+  BrachyMaterialMessenger* fBrachyMaterialMessenger;    
+  G4double fTargetXeDensity;
 };
 
 #endif

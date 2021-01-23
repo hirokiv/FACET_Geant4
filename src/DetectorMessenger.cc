@@ -17,6 +17,9 @@ DetectorMessenger::DetectorMessenger(DetectorConstruction* detector)
   fDirectory = new G4UIdirectory("/ELI-ALPS/SYLOSeBeam/");
   fDirectory->SetGuidance("Detector setup.");
 
+  fDirectory = new G4UIdirectory("/FACET/");
+  fDirectory->SetGuidance("FACET related setup.");
+
   fWorldMaterialCmd = new G4UIcmdWithAString("/ELI-ALPS/SYLOSeBeam/worldMaterial", this);
   fWorldMaterialCmd->SetGuidance("Set the world material.");
   fWorldMaterialCmd->SetParameterName("worldMat", false);

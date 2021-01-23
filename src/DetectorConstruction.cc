@@ -23,7 +23,7 @@
 #include "G4SimpleRunge.hh"
 #include "G4TransportationManager.hh"
 #include "G4Tubs.hh"
-#include "BrachyMaterial.hh"  // Stainless steel defined
+#include "BrachyMaterial.hh"  // Stainless steel and Liquid Xenon defined
 #include "MyField.hh" // Define arbitral magnetic field
 #include "G4AutoDelete.hh"
 #include "G4UserLimits.hh"

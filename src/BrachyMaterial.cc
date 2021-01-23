@@ -24,6 +24,7 @@
 //
 // Code developed by:
 //  S.Guatelli
+//  modified by Hiroki Fujii
 //
 //    *******************************
 //    *                             *
@@ -45,47 +46,53 @@
 #include "G4ElementTable.hh"
 #include "G4SystemOfUnits.hh"
 #include "BrachyMaterial.hh"
+#include "BrachyMaterialMessenger.hh"
 
-BrachyMaterial::BrachyMaterial()
-{;}
+BrachyMaterial::BrachyMaterial(): fTargetXeDensity(2.953*g/cm3)
+{
+  fBrachyMaterialMessenger = new BrachyMaterialMessenger(this);
+}
 
 BrachyMaterial::~BrachyMaterial()
-{;}
+{
+  delete fBrachyMaterialMessenger;
+}
 void BrachyMaterial::DefineMaterials()
 {
-// Define required materials
-
- G4double A;  // atomic mass
- G4double Z;  // atomic number
- G4double d;  // density
- 
+  G4cout << "BrachyMaterial::DefineMaterials() called" << G4endl;
+  // Define required materials
+  
+   G4double A;  // atomic mass
+   G4double Z;  // atomic number
+   G4double d;  // density
    
-// // Elements for Tube
-
- A = 54.94*g/mole;
- G4Element* elMn  = new G4Element("Manganese","Mn",Z=25.,A);
- 
- A = 28.09*g/mole;
- G4Element* elSi  = new G4Element("Silicon","Si",Z=14.,A);
-
- A = 52.00*g/mole;
- G4Element* elCr  = new G4Element("Chromium","Cr",Z=24.,A);
-
- A = 58.70*g/mole;
- G4Element* elNi  = new G4Element("Nickel","Ni",Z=28.,A);
-//
- A = 55.85*g/mole;
- G4Element* elFe  = new G4Element("Iron","Fe",Z=26.,A);
-
- // Stainless steel (Medical Physics, Vol 25, No 10, Oct 1998)
- d = 8.02*g/cm3 ;
- G4Material* matsteel = new G4Material("StainlessSteel",d,5);
- matsteel->AddElement(elMn, 0.02);
- matsteel->AddElement(elSi, 0.01);
- matsteel->AddElement(elCr, 0.19);
- matsteel->AddElement(elNi, 0.10);
- matsteel->AddElement(elFe, 0.68);
-
+     
+  // // Elements for Tube
+  
+   A = 54.94*g/mole;
+   G4Element* elMn  = new G4Element("Manganese","Mn",Z=25.,A);
+   
+   A = 28.09*g/mole;
+   G4Element* elSi  = new G4Element("Silicon","Si",Z=14.,A);
+  
+   A = 52.00*g/mole;
+   G4Element* elCr  = new G4Element("Chromium","Cr",Z=24.,A);
+  
+   A = 58.70*g/mole;
+   G4Element* elNi  = new G4Element("Nickel","Ni",Z=28.,A);
+  //
+   A = 55.85*g/mole;
+   G4Element* elFe  = new G4Element("Iron","Fe",Z=26.,A);
+  
+   
+   // Stainless steel (Medical Physics, Vol 25, No 10, Oct 1998)
+   d = 8.02*g/cm3 ;
+   G4Material* matsteel = new G4Material("StainlessSteel",d,5);
+   matsteel->AddElement(elMn, 0.02);
+   matsteel->AddElement(elSi, 0.01);
+   matsteel->AddElement(elCr, 0.19);
+   matsteel->AddElement(elNi, 0.10);
+   matsteel->AddElement(elFe, 0.68);
 }
 
 G4Material* BrachyMaterial::GetMat(G4String material)
@@ -95,3 +102,27 @@ G4Material* BrachyMaterial::GetMat(G4String material)
  return pttoMaterial; 
 }
 
+void BrachyMaterial::DefineUserDefinedXeJet()
+{
+  // Xe property defined in BrachyMaterial.hh, changeable through the macrofile
+  // /FACET/targetMaterial liquidXe
+  // /FACET/XeDensity 2.953 g/cm3
+  // G4double lXe_density = 2.953 * g/cm3;
+ 
+   G4double A;  // atomic mass
+   G4double Z;  // atomic number
+  
+   A = 131.2930 * g/mole;
+   G4Element* elXe = new G4Element("Xenon","Xe",Z=54., A);
+   // density variable liquid Xe
+   G4Material* matliquidXe = new G4Material("liquidXe",fTargetXeDensity,1);
+   matliquidXe->AddElement(elXe, 1.0);
+}
+
+void BrachyMaterial::SetTargetXeDensity(G4double density)
+{
+  G4cout << "Set Target Xe Density" << G4endl;
+  fTargetXeDensity = density;
+  DefineUserDefinedXeJet();
+  G4RunManager::GetRunManager()->GeometryHasBeenModified();
+}

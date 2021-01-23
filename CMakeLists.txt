@@ -1,5 +1,6 @@
 # $Id: CMakeLists.txt 86065 2014-11-07 08:51:15Z gcosmo $
 
+
 #----------------------------------------------------------------------------
 # Setup the project
 #
@@ -30,6 +31,7 @@ include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(/usr/include/eigen3)
+include_directories(/usr/local/include)
 
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
@@ -43,8 +45,8 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #
 add_executable(ebeam main.cc ${sources} ${headers})
 target_link_libraries(ebeam ${Geant4_LIBRARIES})
-target_link_libraries(ebeam hdf5)
-target_link_libraries(ebeam hdf5_cpp)
+# target_link_libraries(ebeam hdf5)
+# target_link_libraries(ebeam hdf5_cpp)
 target_link_libraries(ebeam Eigen3::Eigen)
 
 #----------------------------------------------------------------------------
