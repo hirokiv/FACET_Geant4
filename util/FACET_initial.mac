@@ -42,11 +42,11 @@
 # /testem/phys/SetGammaToMuPairFac  10000
 # /testem/phys/SetAnnihiToMuPairFac 10000
 /primary/GENMODE GAUSSIAN
-/primary/sigz 2. um
+/primary/sigz 5. um
 /primary/sigr 10. um
 /primary/emittance 40.
 
-/primary/momentum 5100. MeV  # Drive beam
+/primary/momentum 10100. MeV  # Drive beam
 /primary/particle e-  # Drive beam
 #/primary/momentum  9850. MeV  # Trailing beam
 
