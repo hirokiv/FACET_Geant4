@@ -107,59 +107,59 @@ G4double PrimaryGenerator::EnergyDist()
 {
 
   if (fGENMODE == "HDF5") {
-    ph5.StoreFiles();
-    PrimaryGenerator::ReadH5( anEvent );
+//    ph5.StoreFiles();
+//    PrimaryGenerator::ReadH5( anEvent );
   } else {
     PrimaryGenerator::ElectronGun( anEvent );
   }
 
 }
 
-void PrimaryGenerator::ReadH5(G4Event* anEvent){
-  // Particle table
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  // Setup for primary particle
-  G4String particleName = "e+";
-  G4double RM = 0.511 * MeV;
-
-  ph5 = ParticleH5FileReader();
-
-  G4double pos_X =  ph5.GetX1();
-  G4double mom_X = (ph5.GetP1() )*RM; 
-
-  G4double pos_Y =  ph5.GetX2();
-  G4double mom_Y = (ph5.GetP2() )*RM; 
-
-  G4double pos_Z =  ph5.GetX3();
-  G4double mom_Z = (ph5.GetP3() )*RM; 
-  ph5.AddCount();
-
-//  G4cout << "Position(X,Y,Z) :  "
-//	 << pos_X/cm << "  "
-//	 << pos_Y/cm << "  "
-//	 << pos_Z/cm << G4endl;
-//  G4cout << "Momentum(X,Y,Z) :  "
-//         << mom_X << "  "
-//         << mom_Y << "  "
-//         << mom_Z << G4endl;
-
-  G4ThreeVector momentumVector = G4ThreeVector(mom_X, mom_Y, mom_Z);
-//  G4cout << "===============Vector================" << G4endl;
-  //Create a primary particle - need to create for every event
-  G4PrimaryParticle* primaryParticle = 
-    new G4PrimaryParticle( particleTable->FindParticle(particleName), 
-        momentumVector.x(),        momentumVector.y(),        momentumVector.z() );
-
-  // Gun Position
-  G4ThreeVector vertex = G4ThreeVector(pos_X, pos_Y, pos_Z);
-  G4PrimaryVertex* primaryVertex = new G4PrimaryVertex(vertex, 0.0*second);
-
-//  Add the primary particles to the primary vertex
-  primaryVertex->SetPrimary( primaryParticle );
-  // Add the vertex to the event
-  anEvent->AddPrimaryVertex( primaryVertex );
-//  G4cout << "==============EofPart==============" << G4endl;
-}
+// void PrimaryGenerator::ReadH5(G4Event* anEvent){
+//   // Particle table
+//   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+//   // Setup for primary particle
+//   G4String particleName = "e+";
+//   G4double RM = 0.511 * MeV;
+// 
+//   ph5 = ParticleH5FileReader();
+// 
+//   G4double pos_X =  ph5.GetX1();
+//   G4double mom_X = (ph5.GetP1() )*RM; 
+// 
+//   G4double pos_Y =  ph5.GetX2();
+//   G4double mom_Y = (ph5.GetP2() )*RM; 
+// 
+//   G4double pos_Z =  ph5.GetX3();
+//   G4double mom_Z = (ph5.GetP3() )*RM; 
+//   ph5.AddCount();
+// 
+// //  G4cout << "Position(X,Y,Z) :  "
+// //	 << pos_X/cm << "  "
+// //	 << pos_Y/cm << "  "
+// //	 << pos_Z/cm << G4endl;
+// //  G4cout << "Momentum(X,Y,Z) :  "
+// //         << mom_X << "  "
+// //         << mom_Y << "  "
+// //         << mom_Z << G4endl;
+// 
+//   G4ThreeVector momentumVector = G4ThreeVector(mom_X, mom_Y, mom_Z);
+// //  G4cout << "===============Vector================" << G4endl;
+//   //Create a primary particle - need to create for every event
+//   G4PrimaryParticle* primaryParticle = 
+//     new G4PrimaryParticle( particleTable->FindParticle(particleName), 
+//         momentumVector.x(),        momentumVector.y(),        momentumVector.z() );
+// 
+//   // Gun Position
+//   G4ThreeVector vertex = G4ThreeVector(pos_X, pos_Y, pos_Z);
+//   G4PrimaryVertex* primaryVertex = new G4PrimaryVertex(vertex, 0.0*second);
+// 
+// //  Add the primary particles to the primary vertex
+//   primaryVertex->SetPrimary( primaryParticle );
+//   // Add the vertex to the event
+//   anEvent->AddPrimaryVertex( primaryVertex );
+// //  G4cout << "==============EofPart==============" << G4endl;
+// }
 
 
 void PrimaryGenerator::ElectronGun(G4Event* anEvent){
